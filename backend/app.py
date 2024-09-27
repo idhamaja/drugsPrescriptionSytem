@@ -43,25 +43,21 @@ def test_connect():
 def test_disconnect():
     print("Client disconnected")
 
-# Route to add pasien data
+# Route untuk menambah data pasien
 @app.route('/api/add_pasien', methods=['POST'])
 def add_pasien():
     try:
         data = request.get_json()
         new_row = pd.DataFrame([data])
-        # Tambahkan data ke dataframe pasien
         global pasien_df
         pasien_df = pd.concat([pasien_df, new_row], ignore_index=True)
-        # Simpan ke file CSV
-        pasien_df.to_csv('models/data_pasien.csv', index=False)
 
-        # Emit event ke semua klien yang terhubung, mengirimkan data pasien baru
+        # Emit event pasien baru ke semua klien yang terhubung
         socketio.emit('new_pasien', data)
 
         return jsonify({'message': 'Data pasien berhasil ditambahkan!'}), 200
     except Exception as e:
-        logging.error("Error in add_pasien: %s", e)
-        return jsonify({'error': 'Error adding pasien data.'}), 500
+        return jsonify({'error': str(e)}), 500
 
 # Create TF-IDF Vectorizer for diagnosis
 try:

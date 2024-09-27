@@ -190,6 +190,7 @@
             </div>
         </div>
 
+
         {{-- JS Script --}}
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <script nonce="random-nonce-value">
@@ -216,28 +217,34 @@
                                         // Jika diagnosis tidak ditemukan, tampilkan pesan error
                                         $("#diagnosa-error-" + index).text(
                                             "Diagnosis tidak ditemukan dalam dataset"
-                                            ).show();
+                                        ).show();
                                         response([]); // Kosongkan pilihan autocomplete
                                     } else {
-                                        console.log("Diagnosis data fetched: ", data); // Debug respons dari server
-                                        $("#diagnosa-error-" + index).hide
-                                        $("#diagnosa-error-" + index).hide(); // Sembunyikan pesan error jika diagnosis ditemukan
-                                        $("#resep-container-" + index).empty(); // Kosongkan kontainer resep obat saat diagnosis diubah
-                                        response(data); // Kirim data diagnosis ke autocomplete
+                                        console.log("Diagnosis data fetched: ",
+                                            data); // Debug respons dari server
+                                        $("#diagnosa-error-" + index)
+                                            .hide(); // Sembunyikan pesan error jika diagnosis ditemukan
+                                        $("#resep-container-" + index)
+                                            .empty(); // Kosongkan kontainer resep obat saat diagnosis diubah
+                                        response(
+                                            data
+                                        ); // Kirim data diagnosis ke autocomplete
                                     }
                                 },
                                 error: function(xhr, status, error) {
-                                    console.error("Error fetching diagnosis:", error); // Tampilkan error jika ada
+                                    console.error("Error fetching diagnosis:",
+                                        error); // Tampilkan error jika ada
                                     $("#diagnosa-error-" + index).text(
-                                            "Terjadi kesalahan dalam memuat diagnosis"
-                                        ).show();
+                                        "Terjadi kesalahan dalam memuat diagnosis"
+                                    ).show();
                                 }
                             });
                         },
                         minLength: 1, // Minimal karakter yang harus diketik sebelum autocomplete muncul
                         select: function(event, ui) {
                             var diagnosis = ui.item.value;
-                            fetchResepObat(diagnosis, index); // Memanggil fungsi untuk mendapatkan resep obat
+                            fetchResepObat(diagnosis,
+                                index); // Memanggil fungsi untuk mendapatkan resep obat
                         },
                         response: function(event, ui) {
                             // Jika tidak ada hasil, tampilkan pesan peringatan
@@ -245,10 +252,13 @@
                                 $("#diagnosa-error-" + index).text(
                                     "Diagnosis tidak ditemukan dalam dataset"
                                 ).show();
-                                $("#resep-container-" + index).empty(); // Kosongkan kontainer resep obat jika diagnosis tidak ditemukan
+                                $("#resep-container-" + index)
+                                    .empty(); // Kosongkan kontainer resep obat jika diagnosis tidak ditemukan
                             }
                         }
                     });
+
+                    // Fungsi untuk mendapatkan rekomendasi obat
 
                     // Fungsi untuk mendapatkan rekomendasi obat
                     function fetchResepObat(diagnosis, index) {
@@ -266,14 +276,15 @@
                                 if (response.error) {
                                     alert(response.error); // Tampilkan error jika ada
                                 } else if (response["Resep Obat"]) {
-                                    $("#resep-container-" + index).empty(); // Kosongkan kontainer sebelum menambah rekomendasi baru
+                                    $("#resep-container-" + index)
+                                        .empty(); // Kosongkan kontainer sebelum menambah rekomendasi baru
 
                                     // Tampilkan rekomendasi obat sebagai tombol
                                     response["Resep Obat"].forEach(function(obat, idx) {
                                         var btnHtml = `
-                                        <button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">
-                                            ${obat}
-                                        </button>`;
+                    <button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">
+                        ${obat}
+                    </button>`;
                                         $("#resep-container-" + index).append(btnHtml);
                                     });
 
@@ -293,15 +304,18 @@
                     // Fungsi untuk menghapus tombol resep obat
                     function bindResepButtonHandler(index) {
                         // Pastikan semua tombol resep dapat dihapus ketika diklik
-                        $("#resep-container-" + index).off("click", ".resep-button").on("click", ".resep-button", function() {
-                            $(this).remove(); // Menghapus tombol resep obat yang diklik
-                        });
+                        $("#resep-container-" + index).off("click", ".resep-button").on("click",
+                            ".resep-button",
+                            function() {
+                                $(this).remove(); // Menghapus tombol resep obat yang diklik
+                            });
                     }
 
                     $(".modal form").off('submit').on('submit', function() {
                         var selectedObat = [];
                         $("#resep-container-" + index + " .resep-button").each(function() {
-                            var text = $(this).text().trim(); // Mengambil teks dari tombol resep
+                            var text = $(this).text()
+                        .trim(); // Mengambil teks dari tombol resep
                             if (text) { // Hanya masukkan jika teks tidak kosong
                                 selectedObat.push(text);
                             }
@@ -311,9 +325,11 @@
                         $('<input>').attr({
                             type: 'hidden',
                             name: 'resep_obat',
-                            value: selectedObat.join(', ') // Gabungkan resep menjadi satu string, hanya jika ada elemen valid
+                            value: selectedObat.join(
+                                ', ') // Gabungkan resep menjadi satu string, hanya jika ada elemen valid
                         }).appendTo(this);
                     });
+
                 });
             });
         </script>
