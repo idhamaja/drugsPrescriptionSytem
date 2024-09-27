@@ -3,33 +3,65 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 import logging
+logging.basicConfig(level=logging.DEBUG)  # Set logging to DEBUG level
 from flask_cors import CORS
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
-CORS(app)  # Mengizinkan semua asal (origin) untuk akses API
-
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")  # Menginisialisasi SocketIO untuk real-time updates
 
 # Load datasets
 try:
     pasien_df = pd.read_csv('models/data_pasien.csv')
-    diagnosis_df = pd.read_csv('models/data_diagnosis_penyakit.csv')
-    obat_df = pd.read_csv('models/data_resep_obat.csv')
+    diagnosis_df = pd.read_csv('models/data_diagnosis_penyakit_new.csv')
+    obat_df = pd.read_csv('models/data_resep_obat_new.csv')
     logging.info("Datasets loaded successfully.")
 except Exception as e:
     logging.error("Error loading datasets: %s", e)
     raise e
 
-# Validasi kolom yang diperlukan
-required_columns_diagnosis = ['Diagnosis']
-required_columns_obat = ['Diagnosis', 'Resep Obat']
-for col in required_columns_diagnosis:
-    if col not in diagnosis_df.columns:
-        raise ValueError(f"Column '{col}' not found in diagnosis dataset.")
-for col in required_columns_obat:
-    if col not in obat_df.columns:
-        raise ValueError(f"Column '{col}' not found in obat dataset.")
+# Route to get pasien data
+@app.route('/api/pasien', methods=['GET'])
+def get_pasien():
+    try:
+        # Urutkan data pasien berdasarkan kolom 'Nama'
+        sorted_pasien_df = pasien_df.sort_values(by='Nama', ascending=True)
+        # Convert the sorted pasien data to dictionary format to return as JSON
+        pasien_list = sorted_pasien_df.to_dict(orient='records')
+        return jsonify(pasien_list)
+    except Exception as e:
+        logging.error("Error in get_pasien: %s", e)
+        return jsonify({'error': 'An error occurred while fetching pasien data.'}), 500
+
+# Event handler for SocketIO
+@socketio.on('connect')
+def test_connect():
+    print("Client connected")
+
+@socketio.on('disconnect')
+def test_disconnect():
+    print("Client disconnected")
+
+# Route to add pasien data
+@app.route('/api/add_pasien', methods=['POST'])
+def add_pasien():
+    try:
+        data = request.get_json()
+        new_row = pd.DataFrame([data])
+        # Tambahkan data ke dataframe pasien
+        global pasien_df
+        pasien_df = pd.concat([pasien_df, new_row], ignore_index=True)
+        # Simpan ke file CSV
+        pasien_df.to_csv('models/data_pasien.csv', index=False)
+
+        # Emit event ke semua klien yang terhubung, mengirimkan data pasien baru
+        socketio.emit('new_pasien', data)
+
+        return jsonify({'message': 'Data pasien berhasil ditambahkan!'}), 200
+    except Exception as e:
+        logging.error("Error in add_pasien: %s", e)
+        return jsonify({'error': 'Error adding pasien data.'}), 500
 
 # Create TF-IDF Vectorizer for diagnosis
 try:
@@ -40,40 +72,83 @@ except Exception as e:
     logging.error("Error creating TF-IDF Vectorizer: %s", e)
     raise e
 
+@app.route('/api/diagnosis', methods=['GET'])
+def get_diagnosis():
+    try:
+        query = request.args.get('q', '').strip().lower()
+        logging.debug(f"Received query: {query}")
+        if query:
+            # Filter diagnosis yang cocok dengan query
+            filtered_diagnosis = diagnosis_df[diagnosis_df['Diagnosis'].str.contains(query, case=False, na=False)]
+            diagnosis_list = filtered_diagnosis['Diagnosis'].tolist()
+            if not diagnosis_list:
+                logging.debug("No matches found for the diagnosis.")
+                return jsonify({'error': 'Diagnosis tidak ditemukan dalam dataset'}), 404
+            logging.debug(f"Filtered diagnosis: {diagnosis_list}")
+        else:
+            diagnosis_list = []
+            logging.debug("Query kosong.")
+        return jsonify(diagnosis_list)
+    except Exception as e:
+        logging.error("Error in get_diagnosis: %s", e)
+        return jsonify({'error': 'An error occurred while fetching diagnosis data.'}), 500
+
+
+
 # Function to get recommendations based on diagnosis text
 def get_recommendations(diagnosis_text):
     try:
-        logging.debug("Getting recommendations for diagnosis: %s", diagnosis_text)
+        # Log diagnosis input yang diterima
+        logging.debug("Received diagnosis input: %s", diagnosis_text)
 
-        # Convert input diagnosis to lowercase
-        diagnosis_text_lower = diagnosis_text.lower()
+        # Convert diagnosis ke lowercase dan buang spasi berlebih
+        diagnosis_text_lower = diagnosis_text.strip().lower()
 
-        # Convert the 'Diagnosis' column in the dataset to lowercase for comparison
-        diagnosis_df['Diagnosis_Lower'] = diagnosis_df['Diagnosis'].str.lower()
+        # Validasi bahwa diagnosis tidak kosong
+        if not diagnosis_text_lower:
+            logging.warning("Diagnosis input is empty.")
+            return {'error': 'Diagnosis tidak boleh kosong'}
 
-        # Check if the diagnosis is in the dataset (case-insensitive)
-        if diagnosis_text_lower not in diagnosis_df['Diagnosis_Lower'].values:
-            return {'error': 'Diagnosis tidak ada dalam dataset'}
+        # Logging setelah lowercase
+        logging.debug("Processed diagnosis input (lowercased): %s", diagnosis_text_lower)
 
-        # Transform the diagnosis text to TF-IDF
-        tfidf_diagnosis = tfidf.transform([diagnosis_text])
+        # Transformasi input diagnosis ke TF-IDF
+        tfidf_diagnosis = tfidf.transform([diagnosis_text_lower])
+        logging.debug("TF-IDF vector for input diagnosis: %s", tfidf_diagnosis.toarray())
 
-        # Calculate cosine similarity between the input diagnosis and all diagnoses in the dataset
+        # Hitung cosine similarity antara input diagnosis dan seluruh diagnosis di dataset
         cosine_sim_diagnosis = cosine_similarity(tfidf_diagnosis, tfidf_matrix).flatten()
+        logging.debug("Cosine similarity scores: %s", cosine_sim_diagnosis)
 
-        # Find the index of the most similar diagnosis
-        top_index = cosine_sim_diagnosis.argsort()[-2]  # Get the index of the highest similarity score, excluding the input itself
-        matched_diagnosis = diagnosis_df.iloc[top_index]
+        # Temukan indeks diagnosis yang paling mirip berdasarkan cosine similarity
+        top_indices = cosine_sim_diagnosis.argsort()[-5:][::-1]  # Ambil 5 teratas
+        matched_diagnoses = diagnosis_df.iloc[top_indices]
 
-        # Find the recommended medicine based on the matched diagnosis
-        recommended_obat = obat_df[obat_df['Diagnosis'] == matched_diagnosis['Diagnosis']]
-        if recommended_obat.empty:
+        # Jika tidak ada diagnosis yang cocok
+        if matched_diagnoses.empty:
+            logging.debug("No matches found for the diagnosis.")
+            return {'error': 'Diagnosis tidak ditemukan dalam dataset'}, 404
+
+        logging.debug("Top matched diagnoses based on cosine similarity: %s", matched_diagnoses['Diagnosis'].tolist())
+
+        # Koleksi rekomendasi obat berdasarkan diagnosis yang mirip
+        recommended_obat_list = []
+        for _, matched_diagnosis in matched_diagnoses.iterrows():
+            recommended_obat = obat_df[obat_df['Diagnosis'].str.lower() == matched_diagnosis['Diagnosis'].lower()]
+            if not recommended_obat.empty:
+                recommended_obat_list.extend(recommended_obat['Resep Obat'].tolist())
+                logging.debug("Recommended medicines for diagnosis '%s': %s", matched_diagnosis['Diagnosis'], recommended_obat['Resep Obat'].tolist())
+
+        if not recommended_obat_list:
+            logging.debug("No medicines found for the diagnosis: %s", diagnosis_text_lower)
             return {'error': 'Tidak ada rekomendasi obat untuk diagnosis ini'}
 
-        return recommended_obat.iloc[0].to_dict()
+        # Kembalikan maksimal 3 rekomendasi obat
+        return {'Resep Obat': recommended_obat_list[:3]}
     except Exception as e:
         logging.error("Error in get_recommendations: %s", e)
         return {'error': str(e)}
+
 
 
 # Route to get recommendations
@@ -81,7 +156,6 @@ def get_recommendations(diagnosis_text):
 def recommend():
     try:
         data = request.get_json()
-        logging.debug("Received data: %s", data)
         if data is None or 'diagnosis' not in data:
             return jsonify({'error': 'Invalid input. Please provide diagnosis in JSON format.'}), 400
 
@@ -95,67 +169,18 @@ def recommend():
         logging.error("Error in recommend endpoint: %s", e)
         return jsonify({'error': str(e)}), 500
 
+# Backend: validasi dan pembersihan sebelum menyimpan
+def clean_resep_obat(resep_obat):
+    # Hilangkan elemen kosong atau hanya spasi
+    resep_obat_list = [item.strip() for item in resep_obat.split(',') if item.strip()]
+    return ', '.join(resep_obat_list)  # Gabungkan ulang string tanpa elemen kosong
 
-# Route to get diagnosis for autocomplete
-@app.route('/api/diagnosis', methods=['GET'])
-def get_diagnosis():
-    try:
-        # Ambil query dari parameter URL
-        query = request.args.get('q', '').lower()
-
-        # Filter diagnosis berdasarkan query
-        filtered_diagnosis = diagnosis_df[diagnosis_df['Diagnosis'].str.contains(query, case=False, na=False)]
-        diagnosis_list = filtered_diagnosis['Diagnosis'].tolist()
-
-        logging.debug("Diagnosis results for query '%s': %s", query, diagnosis_list)
-
-        return jsonify(diagnosis_list)
-    except Exception as e:
-        logging.error("Error in get_diagnosis: %s", e)
-        return jsonify({'error': 'An error occurred while fetching diagnosis data.'}), 500
+# Sebelum menyimpan ke database
+resep_obat_string = "default_value"
+resep_obat = clean_resep_obat(resep_obat_string)
 
 
-# Route to get resep obat for autocomplete
-@app.route('/api/resep-obat', methods=['GET'])
-def get_resep_obat():
-    try:
-        # Ambil query dari parameter URL
-        query = request.args.get('q', '').lower()
 
-        # Filter resep obat berdasarkan query
-        filtered_resep = obat_df[obat_df['Resep Obat'].str.contains(query, case=False, na=False)]
-        resep_list = filtered_resep['Resep Obat'].tolist()
-
-        logging.debug("Resep Obat results for query '%s': %s", query, resep_list)
-
-        return jsonify(resep_list)
-    except Exception as e:
-        logging.error("Error in get_resep_obat: %s", e)
-        return jsonify({'error': 'An error occurred while fetching resep obat data.'}), 500
-
-# Route to get resep obat by diagnosis
-@app.route('/api/resep-by-diagnosis', methods=['GET'])
-def get_resep_by_diagnosis():
-    try:
-        # Ambil diagnosis dari parameter URL
-        diagnosis = request.args.get('diagnosis', '').lower()
-
-        # Filter data resep obat berdasarkan diagnosis yang dipilih
-        filtered_resep = obat_df[obat_df['Diagnosis'].str.lower() == diagnosis]
-
-        if filtered_resep.empty:
-            return jsonify({'error': 'Diagnosis tidak ada dalam dataset'}), 400
-
-        # Ambil daftar resep obat yang terkait
-        resep_list = filtered_resep['Resep Obat'].tolist()
-
-        logging.debug("Resep Obat for diagnosis '%s': %s", diagnosis, resep_list)
-
-        return jsonify(resep_list)
-    except Exception as e:
-        logging.error("Error in get_resep_by_diagnosis: %s", e)
-        return jsonify({'error': 'An error occurred while fetching resep obat data.'}), 500
-
-
+# Jalankan server Flask dengan SocketIO
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True, use_reloader=False)

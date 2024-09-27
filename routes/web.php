@@ -1,13 +1,18 @@
 <?php
 
-use App\Http\Controllers\PatientController;
-use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\InputPasienController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DiagnosisController;
+use App\Http\Controllers\PasienController;
+use App\Http\Controllers\RekomendasiController;
 
-Route::get('/input-pasien', [PatientController::class, 'create']);
-Route::post('/input-pasien', [PatientController::class, 'store']);
-Route::get('/rekomendasi-obat', [RecommendationController::class, 'show']);
-Route::get('/rekomendasi-obat/{id}', [RecommendationController::class, 'show'])->name('rekomendasi-obat');
+Route::get('/pasien', [PasienController::class, 'index']);
+Route::get('/rekomendasi-obat', [PasienController::class, 'index']);
 
-Route::post('/save-diagnosis-resep', [DiagnosisController::class, 'store'])->name('save-diagnosis-resep');
+Route::get('/api/diagnosis', [RekomendasiController::class, 'getDiagnosa']);
+Route::post('/api/rekomendasi-obat', [RekomendasiController::class, 'getRekomendasiObat']);
+
+Route::get('/input-pasien', [InputPasienController::class, 'showForm']);  // Display the input form
+Route::post('/input-pasien', [InputPasienController::class, 'storeData']);  // Handle form submission and save data
+
+
+Route::post('/simpan-data', [PasienController::class, 'simpanData']);

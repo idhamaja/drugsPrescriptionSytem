@@ -1,26 +1,75 @@
 Diagnosis,Resep Obat
-Infeksi Saluran Pernapasan Akut (ISPA),"Amoksisilin, Paracetamol, Dekongestan"
-Tuberkulosis (TB),"Rifampisin, Isoniazid, Pyrazinamide"
-Hepatitis B,"Tenofovir, Entecavir, Lamivudin"
-Dengue,"Paracetamol, Cairan infus, Vitamin C"
-Infeksi Saluran Kemih (ISK),"Nitrofurantoin, Ciprofloxacin, Trimethoprim-Sulfamethoxazole"
-HIV/AIDS,"Efavirenz, Lamivudine, Tenofovir"
-Malaria,"Artemisinin, Chloroquine, Doxycycline"
-Diabetes Mellitus Tipe 1,"Insulin (Rapid-acting, Long-acting)"
-Diabetes Mellitus Tipe 2,"Metformin, Sulfonilurea, DPP-4 inhibitor"
-Hipertensi,"Amlodipine, Lisinopril, Losartan"
-Hiperlipidemia (kolesterol tinggi),"Atorvastatin, Simvastatin, Ezetimibe"
-Obesitas,"Orlistat, Phentermine, Lorcaserin"
-Penyakit Jantung Koroner,"Aspirin, Nitroglycerin, Statin"
-Stroke,"Clopidogrel, Warfarin, Alteplase"
-Gagal Jantung,"Furosemide, Enalapril, Spironolactone"
-Aritmia,"Amiodarone, Beta-blocker, Digoxin"
-Penyakit Katup Jantung,"Antikoagulan, Beta-blocker, Diuretik"
-Asma,"Salbutamol, Fluticasone, Montelukast"
-Penyakit Paru Obstruktif Kronik (PPOK),"Tiotropium, Salmeterol, Prednisolone"
-Pneumonia,"Levofloxacin, Azitromisin, Ceftriaxone"
-Bronkitis Kronis,"Amoxicillin-Clavulanate, Doxycycline, Inhaler bronkodilator"
-Emfisema,"Tiotropium, Salbutamol, Roflumilast"
-Gastritis,"Omeprazole, Ranitidine, Antasida"
-Tukak Lambung,"Pantoprazole, Lansoprazole, Sucralfate"
-Irritable Bowel Syndrome (IBS),"Dicyclomine, Loperamide, Probiotik"
+Infeksi Saluran Pernapasan Akut (ISPA), Paracetamol
+Infeksi Saluran Pernapasan Akut (ISPA), Amoksisilin
+Infeksi Saluran Pernapasan Akut (ISPA), Dekongestan
+Tuberkulosis (TB), Pyrazinamide
+Tuberkulosis (TB), Rifampisin
+Tuberkulosis (TB), Isoniazid
+Hepatitis B, Lamivudin
+Hepatitis B, Tenofovir
+Hepatitis B, Entecavir
+Dengue, Vitamin C
+Dengue, Paracetamol
+Dengue, Cairan infus
+Infeksi Saluran Kemih (ISK), Trimethoprim-Sulfamethoxazole
+Infeksi Saluran Kemih (ISK), Nitrofurantoin
+Infeksi Saluran Kemih (ISK), Ciprofloxacin
+HIV/AIDS, Tenofovir
+HIV/AID, Efavirenz
+HIV/AID, Lamivudine
+Malaria, Doxycycline
+Malaria, Artemisinin
+Malaria, Chloroquine
+Diabetes Mellitus Tipe 1, Insulin (Long-acting)
+Diabetes Mellitus Tipe 1, Insulin (Rapid-acting)
+Diabetes Mellitus Tipe 2, DPP-4 inhibitor
+Diabetes Mellitus Tipe 2, Metformin
+Diabetes Mellitus Tipe 2, Sulfonilurea
+Hipertensi, Losartan
+Hipertensi, Amlodipine
+Hipertensi, Lisinopril
+Hiperlipidemia (kolesterol tinggi), Ezetimibe
+Hiperlipidemia (kolesterol tinggi), Atorvastatin
+Hiperlipidemia (kolesterol tinggi), Simvastatin
+Obesitas, Lorcaserin
+Obesitas, Orlistat
+Obesitas, Phentermine
+Penyakit Jantung Koroner, Statin
+Penyakit Jantung Koroner, Aspirin
+Penyakit Jantung Koroner, Nitroglycerin
+Stroke, Alteplase
+Stroke, Clopidogrel
+Stroke, Warfarin
+Gagal Jantung, Spironolactone
+Gagal Jantung, Furosemide
+Gagal Jantung, Enalapril
+Aritmia, Digoxin
+Aritmia, Amiodarone
+Aritmia, Beta-blocker
+Penyakit Katup Jantung, Diuretik
+Penyakit Katup Jantung, Antikoagulan
+Penyakit Katup Jantung, Beta-blocker
+Asma, Montelukast
+Asma, Salbutamol
+Asma, Fluticasone
+Penyakit Paru Obstruktif Kronik (PPOK), Prednisolone
+Penyakit Paru Obstruktif Kronik (PPOK), Tiotropium
+Penyakit Paru Obstruktif Kronik (PPOK), Salmeterol
+Pneumonia, Ceftriaxone
+Pneumonia, Levofloxacin
+Pneumonia, Azitromisin
+Bronkitis Kronis, Doxycycline
+Bronkitis Kronis, Amoxicillin-Clavulanate
+Bronkitis Kronis, Inhaler bronkodilator
+Emfisema, Roflumilast
+Emfisema, Tiotropium
+Emfisema, Salbutamol
+Gastritis, Antasida
+Gastritis, Omeprazole
+Gastritis, Ranitidine
+GERD, Sucralfate
+GERD, Pantoprazole
+GERD, Lansoprazole
+Irritable Bowel Syndrome (IBS), Probiotik
+Irritable Bowel Syndrome (IBS), Dicyclomine
+Irritable Bowel Syndrome (IBS), Loperamide
