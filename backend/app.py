@@ -1,8 +1,11 @@
+
+
 from flask import Flask, jsonify, request
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 import logging
+
 logging.basicConfig(level=logging.DEBUG)  # Set logging to DEBUG level
 from flask_cors import CORS
 from flask_socketio import SocketIO
@@ -21,7 +24,7 @@ except Exception as e:
     logging.error("Error loading datasets: %s", e)
     raise e
 
-# Route to get pasien data
+    # Route to get pasien data
 @app.route('/api/pasien', methods=['GET'])
 def get_pasien():
     try:
@@ -43,21 +46,27 @@ def test_connect():
 def test_disconnect():
     print("Client disconnected")
 
-# Route untuk menambah data pasien
 @app.route('/api/add_pasien', methods=['POST'])
 def add_pasien():
     try:
         data = request.get_json()
         new_row = pd.DataFrame([data])
         global pasien_df
+
+        # Save new data to CSV
+        new_row.to_csv('/models/data_pasien.csv', mode='a', header=False, index=False)
+
+        # Append the new data to the dataset
         pasien_df = pd.concat([pasien_df, new_row], ignore_index=True)
 
-        # Emit event pasien baru ke semua klien yang terhubung
-        socketio.emit('new_pasien', data)
+        # Emit event to update the frontend in real-time
+        socketio.emit('new_pasien', data, broadcast=True)
 
-        return jsonify({'message': 'Data pasien berhasil ditambahkan!'}), 200
+        return jsonify({'message': 'Patient data successfully added!'}), 200
     except Exception as e:
+        logging.error("Error adding pasien: %s", e)
         return jsonify({'error': str(e)}), 500
+
 
 # Create TF-IDF Vectorizer for diagnosis
 try:
@@ -190,14 +199,13 @@ def save_diagnosis():
             return jsonify({'error': 'Pasien tidak ditemukan'}), 404
 
         # Simpan diagnosis pasien
-        # Misalnya menyimpan diagnosis pada diagnosis_df atau tindakan lain
         new_diagnosis_row = {
             'Nama': nama,
             'Diagnosis': diagnosis
         }
-        diagnosis_df.loc[len(diagnosis_df)] = new_diagnosis_row  # Simpan diagnosis baru ke diagnosis_df
+        diagnosis_df.loc[len(diagnosis_df)] = new_diagnosis_row  # Simpan diagnosis baru
 
-        # Setelah diagnosis disimpan, hapus data pasien dari dataset pasien_df
+        # Hapus data pasien dari dataset pasien_df
         pasien_df = pasien_df[pasien_df['Nama'].str.lower() != nama.lower()]
 
         # Emit event pasien yang sudah dihapus ke semua klien yang terhubung
@@ -208,6 +216,7 @@ def save_diagnosis():
         logging.error("Error in save_diagnosis: %s", e)
         return jsonify({'error': str(e)}), 500
 
+
 # Jalankan server Flask dengan SocketIO
 if __name__ == '__main__':
-    socketio.run(app, debug=True, use_reloader=False)
+    socketio.run(app, debug=True, use_reloader=False, host='0.0.0.0', port=5000)
