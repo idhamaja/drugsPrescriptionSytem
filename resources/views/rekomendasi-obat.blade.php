@@ -8,6 +8,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Tambahkan jQuery UI -->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Pasien</title>
@@ -69,7 +72,7 @@
 
                 {{-- Data Pasien --}}
                 <div class="table-responsive mt-2">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover" id="patient-table">
                         <thead class="table-dark">
                             <tr>
                                 <th scope="col">Nama</th>
@@ -81,7 +84,7 @@
                         <tbody>
                             @if (!empty($data_pasien) && count($data_pasien) > 0)
                                 @foreach ($data_pasien as $pasien)
-                                    <tr>
+                                    <tr id="row-{{ $loop->index }}">
                                         <td>{{ $pasien['Nama'] }}</td>
                                         <td>{{ $pasien['Gender'] }}</td>
                                         <td>{{ $pasien['Umur'] }}</td>
@@ -190,80 +193,65 @@
             </div>
         </div>
 
-
         {{-- JS Script --}}
         <meta name="csrf-token" content="{{ csrf_token() }}">
+
         <script nonce="random-nonce-value">
             $(document).ready(function() {
-                // Inisialisasi tooltip
-                $('[data-toggle="tooltip"]').tooltip();
+                // Menghubungkan ke server SocketIO
+                var socket = io.connect('http://127.0.0.1:5000'); // Ganti dengan URL server Flask Anda
 
-                // Pastikan autocomplete hanya dijalankan ketika modal dibuka
+                // Mendengarkan event 'patient_deleted' dari backend
+                socket.on('patient_deleted', function(data) {
+                    alert("Pasien dengan nama " + data.nama + " telah dihapus.");
+                    // Hapus baris pasien dari tabel berdasarkan nama pasien
+                    $("tr:contains('" + data.nama + "')").remove();
+                });
+
+                // Inisialisasi autocomplete untuk diagnosa
                 $('.modal').on('shown.bs.modal', function(e) {
                     var modalId = $(this).attr('id');
                     var index = modalId.split('-')[1]; // Mendapatkan index dari modal
 
-                    // Inisialisasi autocomplete untuk diagnosa
+                    // Autocomplete untuk diagnosa
                     $("#diagnosa-" + index).autocomplete({
                         source: function(request, response) {
                             $.ajax({
                                 url: "/api/diagnosis", // URL API untuk diagnosis
                                 dataType: "json",
                                 data: {
-                                    q: request.term // Input yang diketik oleh pengguna
+                                    q: request.term
                                 },
                                 success: function(data) {
                                     if (data.error || data.length === 0) {
-                                        // Jika diagnosis tidak ditemukan, tampilkan pesan error
                                         $("#diagnosa-error-" + index).text(
                                             "Diagnosis tidak ditemukan dalam dataset"
-                                        ).show();
-                                        response([]); // Kosongkan pilihan autocomplete
+                                            ).show();
+                                        response([]);
                                     } else {
-                                        console.log("Diagnosis data fetched: ",
-                                            data); // Debug respons dari server
-                                        $("#diagnosa-error-" + index)
-                                            .hide(); // Sembunyikan pesan error jika diagnosis ditemukan
-                                        $("#resep-container-" + index)
-                                            .empty(); // Kosongkan kontainer resep obat saat diagnosis diubah
-                                        response(
-                                            data
-                                        ); // Kirim data diagnosis ke autocomplete
+                                        $("#diagnosa-error-" + index).hide();
+                                        response(data);
                                     }
                                 },
                                 error: function(xhr, status, error) {
-                                    console.error("Error fetching diagnosis:",
-                                        error); // Tampilkan error jika ada
+                                    console.error("Error fetching diagnosis:", error);
                                     $("#diagnosa-error-" + index).text(
-                                        "Terjadi kesalahan dalam memuat diagnosis"
-                                    ).show();
+                                            "Terjadi kesalahan dalam memuat diagnosis")
+                                        .show();
                                 }
                             });
                         },
-                        minLength: 1, // Minimal karakter yang harus diketik sebelum autocomplete muncul
+                        minLength: 1,
                         select: function(event, ui) {
                             var diagnosis = ui.item.value;
-                            fetchResepObat(diagnosis,
-                                index); // Memanggil fungsi untuk mendapatkan resep obat
-                        },
-                        response: function(event, ui) {
-                            // Jika tidak ada hasil, tampilkan pesan peringatan
-                            if (ui.content.length === 0) {
-                                $("#diagnosa-error-" + index).text(
-                                    "Diagnosis tidak ditemukan dalam dataset"
-                                ).show();
-                                $("#resep-container-" + index)
-                                    .empty(); // Kosongkan kontainer resep obat jika diagnosis tidak ditemukan
-                            }
+                            fetchResepObat(diagnosis, index);
                         }
                     });
 
                     // Fungsi untuk mendapatkan rekomendasi obat
-
-                    // Fungsi untuk mendapatkan rekomendasi obat
                     function fetchResepObat(diagnosis, index) {
                         $.ajax({
-                            url: "/api/rekomendasi-obat", // URL Laravel untuk mengambil rekomendasi obat
+                            url: "/api/rekomendasi-obat",
                             method: "POST",
                             contentType: "application/json",
                             data: JSON.stringify({
@@ -274,21 +262,14 @@
                             },
                             success: function(response) {
                                 if (response.error) {
-                                    alert(response.error); // Tampilkan error jika ada
+                                    alert(response.error);
                                 } else if (response["Resep Obat"]) {
-                                    $("#resep-container-" + index)
-                                        .empty(); // Kosongkan kontainer sebelum menambah rekomendasi baru
-
-                                    // Tampilkan rekomendasi obat sebagai tombol
+                                    $("#resep-container-" + index).empty();
                                     response["Resep Obat"].forEach(function(obat, idx) {
-                                        var btnHtml = `
-                    <button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">
-                        ${obat}
-                    </button>`;
+                                        var btnHtml =
+                                            `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
                                         $("#resep-container-" + index).append(btnHtml);
                                     });
-
-                                    // Bind event handler untuk menghapus tombol resep obat jika diklik
                                     bindResepButtonHandler(index);
                                 } else {
                                     $("#resep-container-" + index).empty().append(
@@ -301,39 +282,35 @@
                         });
                     }
 
-                    // Fungsi untuk menghapus tombol resep obat
+                    // Bind event handler untuk menghapus tombol resep obat jika diklik
                     function bindResepButtonHandler(index) {
-                        // Pastikan semua tombol resep dapat dihapus ketika diklik
                         $("#resep-container-" + index).off("click", ".resep-button").on("click",
                             ".resep-button",
                             function() {
-                                $(this).remove(); // Menghapus tombol resep obat yang diklik
+                                $(this).remove();
                             });
                     }
 
+                    // Ketika form disubmit
                     $(".modal form").off('submit').on('submit', function() {
                         var selectedObat = [];
                         $("#resep-container-" + index + " .resep-button").each(function() {
-                            var text = $(this).text()
-                        .trim(); // Mengambil teks dari tombol resep
-                            if (text) { // Hanya masukkan jika teks tidak kosong
+                            var text = $(this).text().trim();
+                            if (text) {
                                 selectedObat.push(text);
                             }
                         });
 
-                        // Tambahkan hidden input untuk mengirimkan resep obat sebagai teks
+                        // Menambahkan hidden input untuk mengirimkan resep obat
                         $('<input>').attr({
                             type: 'hidden',
                             name: 'resep_obat',
-                            value: selectedObat.join(
-                                ', ') // Gabungkan resep menjadi satu string, hanya jika ada elemen valid
+                            value: selectedObat.join(', ')
                         }).appendTo(this);
                     });
-
                 });
             });
         </script>
-
     </div>
 </body>
 

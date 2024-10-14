@@ -89,8 +89,6 @@ def get_diagnosis():
         logging.error("Error in get_diagnosis: %s", e)
         return jsonify({'error': 'An error occurred while fetching diagnosis data.'}), 500
 
-
-
 # Function to get recommendations based on diagnosis text
 def get_recommendations(diagnosis_text):
     try:
@@ -145,8 +143,6 @@ def get_recommendations(diagnosis_text):
         logging.error("Error in get_recommendations: %s", e)
         return {'error': str(e)}
 
-
-
 # Route to get recommendations
 @app.route('/recommend', methods=['POST'])
 def recommend():
@@ -175,7 +171,42 @@ def clean_resep_obat(resep_obat):
 resep_obat_string = "default_value"
 resep_obat = clean_resep_obat(resep_obat_string)
 
+# Route untuk menyimpan diagnosa dan menghapus pasien dari dataset
+@app.route('/api/save_diagnosis', methods=['POST'])
+def save_diagnosis():
+    try:
+        data = request.get_json()
+        if 'nama' not in data or 'diagnosis' not in data:
+            return jsonify({'error': 'Invalid input. Please provide nama and diagnosis in JSON format.'}), 400
 
+        nama = data['nama']
+        diagnosis = data['diagnosis']
+
+        # Cari pasien berdasarkan nama
+        global pasien_df
+        pasien = pasien_df[pasien_df['Nama'].str.lower() == nama.lower()]
+
+        if pasien.empty:
+            return jsonify({'error': 'Pasien tidak ditemukan'}), 404
+
+        # Simpan diagnosis pasien
+        # Misalnya menyimpan diagnosis pada diagnosis_df atau tindakan lain
+        new_diagnosis_row = {
+            'Nama': nama,
+            'Diagnosis': diagnosis
+        }
+        diagnosis_df.loc[len(diagnosis_df)] = new_diagnosis_row  # Simpan diagnosis baru ke diagnosis_df
+
+        # Setelah diagnosis disimpan, hapus data pasien dari dataset pasien_df
+        pasien_df = pasien_df[pasien_df['Nama'].str.lower() != nama.lower()]
+
+        # Emit event pasien yang sudah dihapus ke semua klien yang terhubung
+        socketio.emit('patient_deleted', {'nama': nama})
+
+        return jsonify({'message': 'Diagnosis disimpan dan data pasien dihapus dari dataset'}), 200
+    except Exception as e:
+        logging.error("Error in save_diagnosis: %s", e)
+        return jsonify({'error': str(e)}), 500
 
 # Jalankan server Flask dengan SocketIO
 if __name__ == '__main__':

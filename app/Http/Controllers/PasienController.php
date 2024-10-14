@@ -51,7 +51,7 @@ class PasienController extends Controller
             'gender' => 'required|string',
             'umur' => 'required|integer|min:0',
             'diagnosa' => 'required|string|max:255',
-            'resep_obat' => 'nullable|string', // Tambahkan validasi untuk resep obat
+            'resep_obat' => 'nullable|string', // Validasi resep obat
         ]);
 
         try {
@@ -65,11 +65,21 @@ class PasienController extends Controller
 
             $pasien->save(); // Simpan ke database
 
-            return redirect()->back()->with('success', 'Data pasien dan resep obat berhasil disimpan.');
+            // Redirect ke halaman rekomendasi obat dengan membawa data pasien
+            return redirect()->route('hasil.rekomendasi', ['pasien_id' => $pasien->id]);
         } catch (\Exception $e) {
             Log::error('Gagal menyimpan data pasien: ' . $e->getMessage());
             return redirect()->back()->withErrors(['error' => 'Gagal menyimpan data pasien']);
         }
     }
 
+    // Metode baru untuk menampilkan hasil rekomendasi obat
+    public function hasilRekomendasi($pasien_id)
+    {
+        // Ambil semua data pasien dari tabel `pasiens`
+        $data_pasien = Pasien::all();
+
+        // Kirim data pasien ke view
+        return view('hasil-rekomendasi', ['data_pasien' => $data_pasien]);
+    }
 }
