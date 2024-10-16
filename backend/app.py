@@ -21,16 +21,14 @@ try:
     obat_df = pd.read_csv('models/data_resep_obat_new.csv')
     logging.info("Datasets loaded successfully.")
 except Exception as e:
-    logging.error("Error loading datasets: %s", e)
+    logging.error(f"Error loading datasets: {e}")
     raise e
 
-    # Route to get pasien data
+# Route to get pasien data
 @app.route('/api/pasien', methods=['GET'])
 def get_pasien():
     try:
-        # Urutkan data pasien berdasarkan kolom 'Nama'
         sorted_pasien_df = pasien_df.sort_values(by='Nama', ascending=True)
-        # Convert the sorted pasien data to dictionary format to return as JSON
         pasien_list = sorted_pasien_df.to_dict(orient='records')
         return jsonify(pasien_list)
     except Exception as e:
@@ -46,6 +44,7 @@ def test_connect():
 def test_disconnect():
     print("Client disconnected")
 
+# Route to add a new patient
 @app.route('/api/add_pasien', methods=['POST'])
 def add_pasien():
     try:
@@ -54,18 +53,21 @@ def add_pasien():
         global pasien_df
 
         # Save new data to CSV
-        new_row.to_csv('/models/data_pasien.csv', mode='a', header=False, index=False)
+        new_row.to_csv('models/data_pasien.csv', mode='a', header=False, index=False)
 
         # Append the new data to the dataset
         pasien_df = pd.concat([pasien_df, new_row], ignore_index=True)
 
         # Emit event to update the frontend in real-time
-        socketio.emit('new_pasien', data, broadcast=True)
+        socketio.emit('new_pasien', data, broadcast=True)  # Emit data pasien baru ke semua klien
 
         return jsonify({'message': 'Patient data successfully added!'}), 200
     except Exception as e:
         logging.error("Error adding pasien: %s", e)
         return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True, use_reloader=False, host='0.0.0.0', port=5000)
 
 
 # Create TF-IDF Vectorizer for diagnosis
@@ -76,6 +78,55 @@ try:
 except Exception as e:
     logging.error("Error creating TF-IDF Vectorizer: %s", e)
     raise e
+
+# Content-based filtering endpoint
+@app.route('/api/cbf', methods=['POST'])
+def content_filtering():
+    try:
+        data = request.get_json()
+        logging.info(f"Received data: {data}")
+
+        diagnosis_text = data.get('diagnosis')
+        logging.info(f"Diagnosis received: {diagnosis_text}")
+
+        if not diagnosis_text:
+            logging.error("No diagnosis input found")
+            return jsonify({'error': 'Diagnosis input is required'}), 400
+
+        # Transformasi diagnosis ke TF-IDF
+        try:
+            tfidf_diagnosis = tfidf.transform([diagnosis_text.lower().strip()])
+            logging.info(f"TF-IDF vector generated: {tfidf_diagnosis}")
+        except Exception as tfidf_error:
+            logging.error(f"Error in TF-IDF transformation: {tfidf_error}")
+            return jsonify({'error': 'Error in TF-IDF transformation'}), 500
+
+        # Perhitungan cosine similarity
+        try:
+            cosine_sim = cosine_similarity(tfidf_diagnosis, tfidf_matrix).flatten()
+            logging.info(f"Cosine similarity calculated: {cosine_sim}")
+        except Exception as cosine_error:
+            logging.error(f"Error calculating cosine similarity: {cosine_error}")
+            return jsonify({'error': 'Error calculating cosine similarity'}), 500
+
+        # Temukan diagnosis teratas berdasarkan cosine similarity
+        try:
+            top_indices = cosine_sim.argsort()[-5:][::-1]
+            top_matches = diagnosis_df.iloc[top_indices]['Diagnosis'].tolist()
+            logging.info(f"Top matches found: {top_matches}")
+        except Exception as match_error:
+            logging.error(f"Error finding top matches: {match_error}")
+            return jsonify({'error': 'Error finding top matches'}), 500
+
+        # Return hasil dalam JSON
+        return jsonify({
+            'diagnosis': diagnosis_text,
+            'cosine_similarity': cosine_sim[top_indices[0]],
+            'top_matches': top_matches
+        }), 200
+    except Exception as e:
+        logging.error(f"Error in content-filtering: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/diagnosis', methods=['GET'])
 def get_diagnosis():
@@ -215,7 +266,6 @@ def save_diagnosis():
     except Exception as e:
         logging.error("Error in save_diagnosis: %s", e)
         return jsonify({'error': str(e)}), 500
-
 
 # Jalankan server Flask dengan SocketIO
 if __name__ == '__main__':

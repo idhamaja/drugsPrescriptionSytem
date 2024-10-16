@@ -21,6 +21,9 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Tambahkan Socket.IO -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
     <style>
         body {
             background-size: cover;
@@ -152,6 +155,15 @@
                                                                         style="display:none; font-size: 0.9em;"></div>
                                                                 </div>
 
+                                                                <!-- Tempat untuk menampilkan perhitungan metode content-based filtering -->
+                                                                <div class="form-group content-filtering-result mt-4">
+                                                                    <h5>Hasil Perhitungan:</h5>
+                                                                    <div id="content-filtering-{{ $loop->index }}"
+                                                                        style="padding: 10px; background-color: #f7f7f7; border: 1px solid #ddd;">
+                                                                        <!-- Perhitungan akan ditampilkan di sini -->
+                                                                    </div>
+                                                                </div>
+
 
                                                                 <!-- Rekomendasi Resep Obat -->
                                                                 <div class="form-group">
@@ -226,7 +238,7 @@
                                     if (data.error || data.length === 0) {
                                         $("#diagnosa-error-" + index).text(
                                             "Diagnosis tidak ditemukan dalam dataset"
-                                            ).show();
+                                        ).show();
                                         response([]);
                                     } else {
                                         $("#diagnosa-error-" + index).hide();
@@ -245,6 +257,9 @@
                         select: function(event, ui) {
                             var diagnosis = ui.item.value;
                             fetchResepObat(diagnosis, index);
+                            fetchContentFiltering(diagnosis,
+                                index
+                            ); // Panggil fungsi untuk menampilkan hasil content-based filtering
                         }
                     });
 
@@ -281,6 +296,57 @@
                             }
                         });
                     }
+
+                    // Ambil CSRF token dari meta tag
+                    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                    // Pastikan setiap request POST menyertakan CSRF token
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    });
+
+                    // Fungsi untuk mendapatkan hasil perhitungan content-based filtering
+                    function fetchContentFiltering(diagnosis, index) {
+                        console.log("Sending diagnosis:", diagnosis); // Log diagnosis yang dikirim
+
+                        $.ajax({
+                            url: "/api/cbf", // URL menuju route Laravel
+                            method: "POST", // Pastikan method di sini adalah POST
+                            contentType: "application/json",
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken // Sertakan CSRF token di header
+                            },
+                            data: JSON.stringify({
+                                diagnosis: diagnosis // Diagnosis yang dikirim
+                            }),
+                            success: function(response) {
+                                console.log("Received response:",
+                                response); // Log response dari backend
+                                if (response.error) {
+                                    $("#content-filtering-" + index).html(
+                                        `<p class="text-danger">${response.error}</p>`
+                                    );
+                                } else {
+                                    let hasil = `
+                    <p><strong>Diagnosis Input:</strong> ${response.diagnosis}</p>
+                    <p><strong>Cosine Similarity:</strong> ${response.cosine_similarity}</p>
+                    <p><strong>Top Matches:</strong> ${response.top_matches.join(', ')}</p>
+                `;
+                                    $("#content-filtering-" + index).html(hasil);
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log("Error response:", xhr
+                                .responseText); // Log jika terjadi error
+                                $("#content-filtering-" + index).html(
+                                    "<p class='text-danger'>Error fetching content-based filtering results.</p>"
+                                );
+                            }
+                        });
+                    }
+
 
                     // Bind event handler untuk menghapus tombol resep obat jika diklik
                     function bindResepButtonHandler(index) {

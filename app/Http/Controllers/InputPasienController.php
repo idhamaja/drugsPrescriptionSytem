@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\PasienAdded;
 
 
-class InputPasienController extends Controller{
-// Menampilkan form input pasien
+class InputPasienController extends Controller
+{
+    // Menampilkan form input pasien
     public function showForm()
     {
         return view('input_pasien');  // Menampilkan form input pasien
@@ -22,34 +24,26 @@ class InputPasienController extends Controller{
             'umur' => 'required|integer|min:0',
         ]);
 
-        // Tentukan path ke file CSV (pastikan folder 'backend/models' berada di root direktori proyek)
+        // Simpan ke CSV
         $filePath = base_path('backend/models/data_pasien.csv');
-
-        // Pastikan folder untuk CSV sudah ada
         if (!file_exists(dirname($filePath))) {
-            mkdir(dirname($filePath), 0777, true);  // Buat folder jika belum ada
+            mkdir(dirname($filePath), 0777, true);
         }
-
-        // Buka file CSV dengan mode append (menambah data di akhir file)
         $file = fopen($filePath, 'a');
-
-        // Cek apakah file CSV sudah ada, jika belum tambahkan header
-        $fileExists = file_exists($filePath);
-        if (!$fileExists || filesize($filePath) == 0) {
-            fputcsv($file, ['Nama', 'Gender', 'Umur']);  // Tambahkan header jika file baru dibuat
+        if (filesize($filePath) == 0) {
+            fputcsv($file, ['Nama', 'Gender', 'Umur']);
         }
-
-        // Simpan data pasien ke CSV
         fputcsv($file, [
             $validatedData['nama'],
             $validatedData['gender'],
             $validatedData['umur']
         ]);
-
-        // Tutup file CSV
         fclose($file);
 
-        // Redirect ke halaman rekomendasi obat dengan flash message
+        // Pancarkan event ketika pasien ditambahkan
+        event(new PasienAdded($validatedData['nama'], $validatedData['gender'], $validatedData['umur']));
+
+        // Redirect ke halaman rekomendasi obat dengan pesan sukses
         return redirect('/rekomendasi-obat')->with('success', 'Data pasien berhasil disimpan.');
     }
 }

@@ -17,3 +17,5 @@ Route::post('/input-pasien', [InputPasienController::class, 'storeData']);  // H
 
 Route::post('/simpan-data', [PasienController::class, 'simpanData']);
 Route::get('/hasil-rekomendasi/{pasien_id}', [PasienController::class, 'hasilRekomendasi'])->name('hasil.rekomendasi');
+
+Route::post('/api/cbf', [RekomendasiController::class, 'contentBasedFiltering']);
