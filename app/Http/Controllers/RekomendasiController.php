@@ -54,7 +54,7 @@ class RekomendasiController extends Controller
 
         // Kirim request ke Flask API untuk content-based filtering
         try {
-            $response = Http::post('http://127.0.0.1:5000/api/content-filtering', [
+            $response = Http::post('http://127.0.0.1:5000/api/cbf', [
                 'diagnosis' => $diagnosis
             ]);
 
