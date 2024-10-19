@@ -1,0 +1,62 @@
+{
+    "packages": [
+        {
+            "name": "kodols/php-mysql-library",
+            "version": "v1.2.0",
+            "version_normalized": "1.2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kodols/php-mysql-library.git",
+                "reference": "2ee56d8e0e686991e1512d92b8596bd2ab0ecdd8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kodols/php-mysql-library/zipball/2ee56d8e0e686991e1512d92b8596bd2ab0ecdd8",
+                "reference": "2ee56d8e0e686991e1512d92b8596bd2ab0ecdd8",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4.0|~7.0|~8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35|^5.7.27"
+            },
+            "time": "2023-02-15T14:20:29+00:00",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-4": {
+                    "Kodols\\MySQL\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Edward",
+                    "email": "ed@kodols.com",
+                    "homepage": "http://www.kodols.com"
+                }
+            ],
+            "description": "A Simple MySQL Library for PHP",
+            "homepage": "http://www.kodols.com",
+            "keywords": [
+                "builder",
+                "database",
+                "mysql",
+                "pdo",
+                "php",
+                "query"
+            ],
+            "support": {
+                "issues": "https://github.com/kodols/php-mysql-library/issues",
+                "source": "https://github.com/kodols/php-mysql-library/tree/v1.2.0"
+            },
+            "install-path": "../kodols/php-mysql-library"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}

@@ -1,0 +1,5 @@
+{
+    "require": {
+        "kodols/php-mysql-library": "^1.2"
+    }
+}
