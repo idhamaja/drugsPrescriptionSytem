@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import normalize
 import logging
 
 logging.basicConfig(level=logging.DEBUG)  # Set logging to DEBUG level
@@ -72,7 +73,7 @@ if __name__ == '__main__':
 
 # Create TF-IDF Vectorizer for diagnosis
 try:
-    tfidf = TfidfVectorizer(stop_words='english')
+    tfidf = TfidfVectorizer(stop_words='english', ngram_range=(1, 2))  # Menggunakan n-gram untuk mengoptimalkan
     tfidf_matrix = tfidf.fit_transform(diagnosis_df['Diagnosis'])
     logging.info("TF-IDF Vectorizer created successfully.")
 except Exception as e:
@@ -84,49 +85,39 @@ except Exception as e:
 def content_filtering():
     try:
         data = request.get_json()
-        logging.info(f"Received data: {data}")
-
         diagnosis_text = data.get('diagnosis')
-        logging.info(f"Diagnosis received: {diagnosis_text}")
 
         if not diagnosis_text:
-            logging.error("No diagnosis input found")
             return jsonify({'error': 'Diagnosis input is required'}), 400
 
-        # Transformasi diagnosis ke TF-IDF
-        try:
-            tfidf_diagnosis = tfidf.transform([diagnosis_text.lower().strip()])
-            logging.info(f"TF-IDF vector generated: {tfidf_diagnosis}")
-        except Exception as tfidf_error:
-            logging.error(f"Error in TF-IDF transformation: {tfidf_error}")
-            return jsonify({'error': 'Error in TF-IDF transformation'}), 500
+        # Transformasi diagnosis input ke TF-IDF
+        tfidf_diagnosis = tfidf.transform([diagnosis_text.lower().strip()])
 
-        # Perhitungan cosine similarity
-        try:
-            cosine_sim = cosine_similarity(tfidf_diagnosis, tfidf_matrix).flatten()
-            logging.info(f"Cosine similarity calculated: {cosine_sim}")
-        except Exception as cosine_error:
-            logging.error(f"Error calculating cosine similarity: {cosine_error}")
-            return jsonify({'error': 'Error calculating cosine similarity'}), 500
+        # Normalisasi sebelum cosine similarity
+        tfidf_matrix_normalized = normalize(tfidf_matrix)
+        cosine_sim = cosine_similarity(tfidf_diagnosis, tfidf_matrix_normalized).flatten()
 
-        # Temukan diagnosis teratas berdasarkan cosine similarity
-        try:
-            top_indices = cosine_sim.argsort()[-5:][::-1]
-            top_matches = diagnosis_df.iloc[top_indices]['Diagnosis'].tolist()
-            logging.info(f"Top matches found: {top_matches}")
-        except Exception as match_error:
-            logging.error(f"Error finding top matches: {match_error}")
-            return jsonify({'error': 'Error finding top matches'}), 500
+        # Terapkan threshold untuk cosine similarity
+        threshold = 0.5  # Nilai minimal cosine similarity yang diterima
+        top_indices = [i for i in range(len(cosine_sim)) if cosine_sim[i] > threshold]
+
+        if not top_indices:
+            return jsonify({'error': 'No similar diagnosis found with sufficient similarity.'}), 400
+
+        # Ambil diagnosis teratas berdasarkan cosine similarity dan urutkan dari tertinggi
+        top_indices = sorted(top_indices, key=lambda i: cosine_sim[i], reverse=True)
+        top_matches = diagnosis_df.iloc[top_indices]['Diagnosis'].tolist()
 
         # Return hasil dalam JSON
         return jsonify({
             'diagnosis': diagnosis_text,
-            'cosine_similarity': cosine_sim[top_indices[0]],
+            'cosine_similarity': cosine_sim[top_indices[0]],  # Mengirimkan similarity tertinggi
             'top_matches': top_matches
         }), 200
     except Exception as e:
         logging.error(f"Error in content-filtering: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/diagnosis', methods=['GET'])
 def get_diagnosis():
@@ -149,41 +140,56 @@ def get_diagnosis():
         logging.error("Error in get_diagnosis: %s", e)
         return jsonify({'error': 'An error occurred while fetching diagnosis data.'}), 500
 
+@app.route('/api/delete_diagnosis', methods=['POST'])
+def delete_diagnosis():
+    try:
+        data = request.get_json()
+        if 'diagnosis' not in data:
+            return jsonify({'error': 'Invalid input. Please provide diagnosis in JSON format.'}), 400
+
+        diagnosis = data['diagnosis'].lower()
+
+        global diagnosis_df
+        diagnosis_df = diagnosis_df[diagnosis_df['Diagnosis'].str.lower() != diagnosis]
+
+        # Simpan perubahan ke CSV jika diperlukan
+        diagnosis_df.to_csv('models/data_diagnosis_penyakit_new.csv', index=False)
+
+        # Emit event ke klien untuk memperbarui autocomplete
+        socketio.emit('diagnosis_deleted', {'diagnosis': diagnosis})
+
+        return jsonify({'message': 'Diagnosis berhasil dihapus'}), 200
+    except Exception as e:
+        logging.error(f"Error deleting diagnosis: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 # Function to get recommendations based on diagnosis text
 def get_recommendations(diagnosis_text):
     try:
-        # Log diagnosis input yang diterima
-        logging.debug("Received diagnosis input: %s", diagnosis_text)
-
         # Convert diagnosis ke lowercase dan buang spasi berlebih
         diagnosis_text_lower = diagnosis_text.strip().lower()
 
-        # Validasi bahwa diagnosis tidak kosong
         if not diagnosis_text_lower:
-            logging.warning("Diagnosis input is empty.")
             return {'error': 'Diagnosis tidak boleh kosong'}
-
-        # Logging setelah lowercase
-        logging.debug("Processed diagnosis input (lowercased): %s", diagnosis_text_lower)
 
         # Transformasi input diagnosis ke TF-IDF
         tfidf_diagnosis = tfidf.transform([diagnosis_text_lower])
-        logging.debug("TF-IDF vector for input diagnosis: %s", tfidf_diagnosis.toarray())
 
-        # Hitung cosine similarity antara input diagnosis dan seluruh diagnosis di dataset
-        cosine_sim_diagnosis = cosine_similarity(tfidf_diagnosis, tfidf_matrix).flatten()
-        logging.debug("Cosine similarity scores: %s", cosine_sim_diagnosis)
+        # Normalisasi sebelum cosine similarity
+        tfidf_matrix_normalized = normalize(tfidf_matrix)
+        cosine_sim_diagnosis = cosine_similarity(tfidf_diagnosis, tfidf_matrix_normalized).flatten()
 
-        # Temukan indeks diagnosis yang paling mirip berdasarkan cosine similarity
-        top_indices = cosine_sim_diagnosis.argsort()[-5:][::-1]  # Ambil 5 teratas
+        # Terapkan threshold untuk cosine similarity
+        threshold = 0.5  # Nilai minimal cosine similarity yang diterima
+        top_indices = [i for i in range(len(cosine_sim_diagnosis)) if cosine_sim_diagnosis[i] > threshold]
+
+        if not top_indices:
+            return {'error': 'Tidak ada diagnosis yang relevan dengan tingkat kemiripan yang cukup'}
+
+        # Ambil diagnosis teratas berdasarkan cosine similarity dan urutkan dari tertinggi
+        top_indices = sorted(top_indices, key=lambda i: cosine_sim_diagnosis[i], reverse=True)
         matched_diagnoses = diagnosis_df.iloc[top_indices]
-
-        # Jika tidak ada diagnosis yang cocok
-        if matched_diagnoses.empty:
-            logging.debug("No matches found for the diagnosis.")
-            return {'error': 'Diagnosis tidak ditemukan dalam dataset'}, 404
-
-        logging.debug("Top matched diagnoses based on cosine similarity: %s", matched_diagnoses['Diagnosis'].tolist())
 
         # Koleksi rekomendasi obat berdasarkan diagnosis yang mirip
         recommended_obat_list = []
@@ -191,13 +197,10 @@ def get_recommendations(diagnosis_text):
             recommended_obat = obat_df[obat_df['Diagnosis'].str.lower() == matched_diagnosis['Diagnosis'].lower()]
             if not recommended_obat.empty:
                 recommended_obat_list.extend(recommended_obat['Resep Obat'].tolist())
-                logging.debug("Recommended medicines for diagnosis '%s': %s", matched_diagnosis['Diagnosis'], recommended_obat['Resep Obat'].tolist())
 
         if not recommended_obat_list:
-            logging.debug("No medicines found for the diagnosis: %s", diagnosis_text_lower)
             return {'error': 'Tidak ada rekomendasi obat untuk diagnosis ini'}
 
-        # Kembalikan maksimal 3 rekomendasi obat
         return {'Resep Obat': recommended_obat_list[:3]}
     except Exception as e:
         logging.error("Error in get_recommendations: %s", e)
@@ -269,4 +272,5 @@ def save_diagnosis():
 
 # Jalankan server Flask dengan SocketIO
 if __name__ == '__main__':
-    socketio.run(app, debug=True, use_reloader=False, host='0.0.0.0', port=5000)
+   socketio.run(app, host='127.0.0.1', port=5000, debug=True)
+

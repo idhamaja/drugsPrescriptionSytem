@@ -24,6 +24,7 @@
     <!-- Tambahkan Socket.IO -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
+
     <style>
         body {
             background-size: cover;
@@ -127,7 +128,7 @@
                                                                     <label for="nama">Nama</label>
                                                                     <input type="text" class="form-control"
                                                                         id="nama-{{ $loop->index }}" name="nama"
-                                                                        value="{{ $pasien['Nama'] }}">
+                                                                        value="{{ $pasien['Nama'] }}" required>
                                                                 </div>
 
                                                                 <!-- Jenis Kelamin -->
@@ -135,7 +136,7 @@
                                                                     <label for="gender">Jenis Kelamin</label>
                                                                     <input type="text" class="form-control"
                                                                         id="gender-{{ $loop->index }}" name="gender"
-                                                                        value="{{ $pasien['Gender'] }}">
+                                                                        value="{{ $pasien['Gender'] }}" required>
                                                                 </div>
 
                                                                 <!-- Umur -->
@@ -143,22 +144,23 @@
                                                                     <label for="umur">Umur</label>
                                                                     <input type="number" class="form-control"
                                                                         id="umur-{{ $loop->index }}" name="umur"
-                                                                        value="{{ $pasien['Umur'] }}">
+                                                                        value="{{ $pasien['Umur'] }}" required>
                                                                 </div>
 
-                                                                <!-- Diagnosis Autocomplete -->
+                                                                <!-- Diagnosis -->
                                                                 <div class="form-group">
                                                                     <label for="diagnosa">Diagnosa</label>
                                                                     <input type="text"
                                                                         class="form-control diagnosa-autocomplete"
                                                                         id="diagnosa-{{ $loop->index }}"
-                                                                        name="diagnosa"
-                                                                        placeholder="Ketik diagnosis...">
+                                                                        name="diagnosa" placeholder="Ketik diagnosis..."
+                                                                        required>
                                                                     <!-- Tempat untuk pesan error -->
                                                                     <div id="diagnosa-error-{{ $loop->index }}"
                                                                         class="text-danger"
                                                                         style="display:none; font-size: 0.9em;"></div>
                                                                 </div>
+
 
                                                                 <!-- Tempat untuk menampilkan perhitungan metode content-based filtering -->
                                                                 <div class="form-group content-filtering-result mt-4">
@@ -166,6 +168,7 @@
                                                                     <div id="content-filtering-{{ $loop->index }}"
                                                                         style="padding: 10px; background-color: #f7f7f7; border: 1px solid #ddd;">
                                                                         <!-- Perhitungan akan ditampilkan di sini -->
+                                                                        
                                                                     </div>
                                                                 </div>
 
@@ -189,6 +192,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         </td>
                                     </tr>
@@ -216,6 +220,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <script nonce="random-nonce-value">
+
+
             $(document).ready(function() {
                 // Menghubungkan ke server SocketIO
                 var socket = io.connect('http://127.0.0.1:5000'); // Ganti dengan URL server Flask Anda
@@ -226,6 +232,31 @@
                     // Hapus baris pasien dari tabel berdasarkan nama pasien
                     $("tr:contains('" + data.nama + "')").remove();
                 });
+
+                // Mendengarkan event 'diagnosis_deleted' untuk memperbarui autocomplete
+                socket.on('diagnosis_deleted', function(data) {
+                    alert("Diagnosis '" + data.diagnosis + "' telah dihapus.");
+
+                    // Memperbarui autocomplete dengan data diagnosis yang baru
+                    updateAutocompleteSource();
+                });
+
+                // Fungsi untuk memperbarui sumber data autocomplete
+                function updateAutocompleteSource() {
+                    $.ajax({
+                        url: "/api/diagnosis", // URL API untuk mendapatkan diagnosis terbaru
+                        method: "GET",
+                        success: function(data) {
+                            if (!data.error) {
+                                // Perbarui autocomplete dengan diagnosis yang terbaru
+                                $(".diagnosa-autocomplete").autocomplete("option", "source", data);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error updating autocomplete source:", error);
+                        }
+                    });
+                }
 
                 // Inisialisasi autocomplete untuk diagnosa
                 $('.modal').on('shown.bs.modal', function(e) {
@@ -340,6 +371,7 @@
                     <p><strong>Diagnosis Input:</strong> ${response.diagnosis}</p>
                     <p><strong>Cosine Similarity:</strong> ${response.cosine_similarity}</p>
                     <p><strong>Top Matches:</strong> ${response.top_matches.join(', ')}</p>
+
                 `;
                                     $("#content-filtering-" + index).html(hasil);
                                 }

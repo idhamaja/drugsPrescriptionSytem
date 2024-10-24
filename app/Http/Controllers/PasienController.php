@@ -51,7 +51,7 @@ class PasienController extends Controller
             'gender' => 'required|string',
             'umur' => 'required|integer|min:0',
             'diagnosa' => 'required|string|max:255',
-            'resep_obat' => 'nullable|string', // Validasi resep obat
+            'resep_obat' => 'nullable|string',
         ]);
 
         try {
@@ -61,23 +61,23 @@ class PasienController extends Controller
             $pasien->gender = $validatedData['gender'];
             $pasien->umur = $validatedData['umur'];
             $pasien->diagnosa = $validatedData['diagnosa'];
-            $pasien->resep_obat = $validatedData['resep_obat']; // Simpan resep obat yang sudah dikonversi
-
+            $pasien->resep_obat = $validatedData['resep_obat'];
             $pasien->save(); // Simpan ke database
 
-            // Redirect ke halaman rekomendasi obat dengan membawa data pasien
-            return redirect()->route('hasil.rekomendasi', ['pasien_id' => $pasien->id]);
+            // Flash message jika berhasil
+            return redirect()->back()->with('success', 'Diagnosa dan Resep Obat Berhasil Disimpan.');
         } catch (\Exception $e) {
-            Log::error('Gagal menyimpan data pasien: ' . $e->getMessage());
-            return redirect()->back()->withErrors(['error' => 'Gagal menyimpan data pasien']);
+            // Flash message jika terjadi error
+            return redirect()->back()->with('error', 'Data Belum Tersimpan. Terjadi kesalahan.');
         }
     }
+
 
     // Metode baru untuk menampilkan hasil rekomendasi obat
     public function hasilRekomendasi($pasien_id)
     {
-        // Ambil semua data pasien dari tabel `pasiens`
-        $data_pasien = Pasien::all();
+        // Ambil data pasien dengan paginasi (misalnya 10 data per halaman)
+        $data_pasien = Pasien::paginate(10);
 
         // Kirim data pasien ke view
         return view('hasil-rekomendasi', ['data_pasien' => $data_pasien]);

@@ -8,8 +8,28 @@
     <title>Data Keseluruhan Pasien</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* Merapikan ukuran dan margin tombol paginasi */
+        .pagination {
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        .page-item .page-link {
+            padding: 8px 12px;
+            margin: 0 3px;
+            border-radius: 5px;
+        }
+
+        /* Custom untuk hover */
+        .page-item .page-link:hover {
+            background-color: #28AE96;
+            color: white;
+        }
+
         body {
             background-size: cover;
             background-position: center;
@@ -31,6 +51,7 @@
                 <div class="text-center mb-4">
                     <h2>Data Keseluruhan Pasien</h2>
                 </div>
+
                 <!-- Alert Notifikasi Sukses dengan SweetAlert2 -->
                 @if (session('success'))
                     <script>
@@ -38,6 +59,17 @@
                             title: 'Berhasil!',
                             text: "{{ session('success') }}",
                             icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    </script>
+                @endif
+
+                @if (session('error'))
+                    <script>
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: "{{ session('error') }}",
+                            icon: 'error',
                             confirmButtonText: 'OK'
                         });
                     </script>
@@ -64,7 +96,6 @@
                                     <td>{{ $pasien->diagnosa }}</td>
                                     <td>
                                         @if ($pasien->resep_obat)
-                                            <!-- Menampilkan resep obat dalam satu baris dipisahkan koma -->
                                             {{ implode(', ', array_map('trim', explode(',', $pasien->resep_obat))) }}
                                         @else
                                             <p>Tidak ada rekomendasi obat untuk diagnosa ini.</p>
@@ -74,6 +105,11 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Tampilkan paginasi -->
+                <div class="pagination-wrapper mt-3">
+                    {{ $data_pasien->links('pagination::bootstrap-5') }}
                 </div>
 
                 <!-- Tombol kembali ke halaman utama -->

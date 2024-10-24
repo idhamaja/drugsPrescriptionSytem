@@ -18,9 +18,11 @@
             font-family: 'Poppins', sans-serif;
         }
     </style>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 </head>
 
 <body>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="form-container d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="card">
             <div class="card-body">
