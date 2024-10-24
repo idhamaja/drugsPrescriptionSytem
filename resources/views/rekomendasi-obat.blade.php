@@ -58,9 +58,14 @@
         <div class="card">
             <div class="card-body" style="background-color: #DCE8E6; font-family: 'Poppins', sans-serif;">
                 <div class="d-flex justify-content-between align-items-center">
+                    <a href="http://127.0.0.1:8000/hasil-rekomendasi/3" class="btn btn-primary"
+                        style="background-color: #28AE96;">Hasil Rekomendasi</a>
+
                     <h2 class="text-center mb-4">Data Pasien</h2>
+
                     <a href="{{ url('/input-pasien') }}" class="btn btn-primary"
                         style="background-color: #28AE96;">Input Data Pasien</a>
+
                 </div>
 
                 <!-- Alert Notifikasi Sukses -->
@@ -203,6 +208,8 @@
                 </div>
 
             </div>
+
+
         </div>
 
         {{-- JS Script --}}
@@ -323,7 +330,7 @@
                             }),
                             success: function(response) {
                                 console.log("Received response:",
-                                response); // Log response dari backend
+                                    response); // Log response dari backend
                                 if (response.error) {
                                     $("#content-filtering-" + index).html(
                                         `<p class="text-danger">${response.error}</p>`
@@ -339,7 +346,7 @@
                             },
                             error: function(xhr, status, error) {
                                 console.log("Error response:", xhr
-                                .responseText); // Log jika terjadi error
+                                    .responseText); // Log jika terjadi error
                                 $("#content-filtering-" + index).html(
                                     "<p class='text-danger'>Error fetching content-based filtering results.</p>"
                                 );
