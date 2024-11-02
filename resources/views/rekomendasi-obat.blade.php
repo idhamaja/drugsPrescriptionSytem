@@ -37,6 +37,11 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        .modal-lg .modal-content {
+            max-width: 900px;
+            /* Menambah lebar maksimum modal */
+        }
+
         .ui-autocomplete {
             z-index: 2147483647;
         }
@@ -107,7 +112,7 @@
                                             <!-- Modal -->
                                             <div class="modal fade" id="editModal-{{ $loop->index }}" tabindex="-1"
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
+                                                <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="exampleModalLabel">Edit Data
@@ -168,7 +173,7 @@
                                                                     <div id="content-filtering-{{ $loop->index }}"
                                                                         style="padding: 10px; background-color: #f7f7f7; border: 1px solid #ddd;">
                                                                         <!-- Perhitungan akan ditampilkan di sini -->
-                                                                        
+
                                                                     </div>
                                                                 </div>
 
@@ -220,8 +225,6 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <script nonce="random-nonce-value">
-
-
             $(document).ready(function() {
                 // Menghubungkan ke server SocketIO
                 var socket = io.connect('http://127.0.0.1:5000'); // Ganti dengan URL server Flask Anda
@@ -319,10 +322,23 @@
                                 } else if (response["Resep Obat"]) {
                                     $("#resep-container-" + index).empty();
                                     response["Resep Obat"].forEach(function(obat, idx) {
-                                        var btnHtml =
-                                            `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
-                                        $("#resep-container-" + index).append(btnHtml);
+                                        if (idx <
+                                            4
+                                        ) { // Batasan 10 resep obat ditampilkan sebagai tombol
+                                            var btnHtml =
+                                                `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
+                                            $("#resep-container-" + index).append(btnHtml);
+                                        }
                                     });
+                                    // Memasukkan semua resep obat yang diterima pada hidden input
+                                    $("#form-edit-" + index).find("input[name='resep_obat']")
+                                        .remove();
+                                    $('<input>').attr({
+                                        type: 'hidden',
+                                        name: 'resep_obat',
+                                        value: response["Resep Obat"].join(', ')
+                                    }).appendTo("#form-edit-" + index);
+
                                     bindResepButtonHandler(index);
                                 } else {
                                     $("#resep-container-" + index).empty().append(
@@ -392,7 +408,12 @@
                         $("#resep-container-" + index).off("click", ".resep-button").on("click",
                             ".resep-button",
                             function() {
-                                $(this).remove();
+                                if ($("#resep-container-" + index).children().length >
+                                    1) { // Menghapus jika lebih dari satu
+                                    $(this).remove();
+                                } else {
+                                    alert("Minimal satu resep obat harus ditampilkan.");
+                                }
                             });
                     }
 
@@ -406,7 +427,8 @@
                             }
                         });
 
-                        // Menambahkan hidden input untuk mengirimkan resep obat
+                        // Menghapus dan menambahkan hidden input untuk resep obat yang dipilih
+                        $(this).find("input[name='resep_obat']").remove();
                         $('<input>').attr({
                             type: 'hidden',
                             name: 'resep_obat',

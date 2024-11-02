@@ -1,5 +1,3 @@
-
-
 from flask import Flask, jsonify, request
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
@@ -88,25 +86,32 @@ def content_filtering():
         diagnosis_text = data.get('diagnosis')
 
         if not diagnosis_text:
+            logging.error("Diagnosis input is missing.")
             return jsonify({'error': 'Diagnosis input is required'}), 400
 
         # Transformasi diagnosis input ke TF-IDF
+        logging.info(f"Transforming diagnosis input to TF-IDF: {diagnosis_text}")
         tfidf_diagnosis = tfidf.transform([diagnosis_text.lower().strip()])
+        logging.debug(f"TF-IDF Vector for input diagnosis: {tfidf_diagnosis.toarray()}")
 
         # Normalisasi sebelum cosine similarity
+        logging.info("Normalizing TF-IDF matrix...")
         tfidf_matrix_normalized = normalize(tfidf_matrix)
         cosine_sim = cosine_similarity(tfidf_diagnosis, tfidf_matrix_normalized).flatten()
+        logging.debug(f"Cosine Similarity Scores: {cosine_sim}")
 
         # Terapkan threshold untuk cosine similarity
         threshold = 0.5  # Nilai minimal cosine similarity yang diterima
         top_indices = [i for i in range(len(cosine_sim)) if cosine_sim[i] > threshold]
 
         if not top_indices:
+            logging.info("No similar diagnosis found with sufficient similarity.")
             return jsonify({'error': 'No similar diagnosis found with sufficient similarity.'}), 400
 
         # Ambil diagnosis teratas berdasarkan cosine similarity dan urutkan dari tertinggi
         top_indices = sorted(top_indices, key=lambda i: cosine_sim[i], reverse=True)
         top_matches = diagnosis_df.iloc[top_indices]['Diagnosis'].tolist()
+        logging.info(f"Top matched diagnoses: {top_matches}")
 
         # Return hasil dalam JSON
         return jsonify({
@@ -117,6 +122,7 @@ def content_filtering():
     except Exception as e:
         logging.error(f"Error in content-filtering: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 
 @app.route('/api/diagnosis', methods=['GET'])
@@ -167,29 +173,39 @@ def delete_diagnosis():
 # Function to get recommendations based on diagnosis text
 def get_recommendations(diagnosis_text):
     try:
+        # Log input diagnosis
+        logging.info(f"Received diagnosis input for recommendations: {diagnosis_text}")
+
         # Convert diagnosis ke lowercase dan buang spasi berlebih
         diagnosis_text_lower = diagnosis_text.strip().lower()
 
         if not diagnosis_text_lower:
+            logging.warning("Empty diagnosis input.")
             return {'error': 'Diagnosis tidak boleh kosong'}
 
         # Transformasi input diagnosis ke TF-IDF
+        logging.info("Transforming input diagnosis to TF-IDF...")
         tfidf_diagnosis = tfidf.transform([diagnosis_text_lower])
+        logging.debug(f"TF-IDF Vector for input diagnosis: {tfidf_diagnosis.toarray()}")
 
         # Normalisasi sebelum cosine similarity
+        logging.info("Normalizing TF-IDF matrix for cosine similarity...")
         tfidf_matrix_normalized = normalize(tfidf_matrix)
         cosine_sim_diagnosis = cosine_similarity(tfidf_diagnosis, tfidf_matrix_normalized).flatten()
+        logging.debug(f"Cosine Similarity Scores: {cosine_sim_diagnosis}")
 
         # Terapkan threshold untuk cosine similarity
         threshold = 0.5  # Nilai minimal cosine similarity yang diterima
         top_indices = [i for i in range(len(cosine_sim_diagnosis)) if cosine_sim_diagnosis[i] > threshold]
 
         if not top_indices:
+            logging.info("No relevant diagnosis found with sufficient similarity.")
             return {'error': 'Tidak ada diagnosis yang relevan dengan tingkat kemiripan yang cukup'}
 
         # Ambil diagnosis teratas berdasarkan cosine similarity dan urutkan dari tertinggi
         top_indices = sorted(top_indices, key=lambda i: cosine_sim_diagnosis[i], reverse=True)
         matched_diagnoses = diagnosis_df.iloc[top_indices]
+        logging.info(f"Top matched diagnoses: {matched_diagnoses['Diagnosis'].tolist()}")
 
         # Koleksi rekomendasi obat berdasarkan diagnosis yang mirip
         recommended_obat_list = []
@@ -197,14 +213,17 @@ def get_recommendations(diagnosis_text):
             recommended_obat = obat_df[obat_df['Diagnosis'].str.lower() == matched_diagnosis['Diagnosis'].lower()]
             if not recommended_obat.empty:
                 recommended_obat_list.extend(recommended_obat['Resep Obat'].tolist())
+                logging.debug(f"Recommended medicines for diagnosis '{matched_diagnosis['Diagnosis']}': {recommended_obat['Resep Obat'].tolist()}")
 
         if not recommended_obat_list:
+            logging.info("No medicines found for the diagnosis.")
             return {'error': 'Tidak ada rekomendasi obat untuk diagnosis ini'}
 
         return {'Resep Obat': recommended_obat_list[:3]}
     except Exception as e:
-        logging.error("Error in get_recommendations: %s", e)
+        logging.error(f"Error in get_recommendations: {e}")
         return {'error': str(e)}
+
 
 # Route to get recommendations
 @app.route('/recommend', methods=['POST'])
@@ -269,6 +288,7 @@ def save_diagnosis():
     except Exception as e:
         logging.error("Error in save_diagnosis: %s", e)
         return jsonify({'error': str(e)}), 500
+
 
 # Jalankan server Flask dengan SocketIO
 if __name__ == '__main__':

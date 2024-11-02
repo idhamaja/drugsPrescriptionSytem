@@ -1,156 +1,576 @@
 Diagnosis,Resep Obat
-Anemia,"vitamin B12"
-Anemia,"Suplemen zat besi"
-Anemia,"asam folat"
-Malaria,"kina"
-Malaria,"Klorokuin"
-Malaria,"Klorokuin"
-Cacingan,"pirantel pamoat"
-Cacingan,"Mebendazole"
-Cacingan,"albendazole"
-Diare,"metronidazole"
-Diare,"Oralit"
-Diare,"loperamide"
-Demam Berdarah Dengue (DBD),"istirahat"
-Demam Berdarah Dengue (DBD),"Parasetamol"
-Demam Berdarah Dengue (DBD),"cairan infus"
-Tifus,"ceftriaxone"
-Tifus,"Ciprofloxacin"
-Tifus,"azithromycin"
-Influenza,"dekongestan"
-Influenza,"Parasetamol"
-Influenza,"ibuprofen"
-Faringitis,"acetaminophen"
-Faringitis,"Amoxicillin"
-Faringitis,"cefadroxil"
-Bronkitis,"bronkodilator"
-Bronkitis,"Amoxicillin"
-Bronkitis,"azithromycin"
-Pneumonia,"ceftriaxone"
-Pneumonia,"Amoxicillin"
-Pneumonia,"azithromycin"
-Asma,"ipratropium bromide"
-Asma,"Salbutamol"
-Asma,"budesonide"
-Gagal Jantung,"ACE inhibitor"
-Gagal Jantung,"Diuretik"
-Gagal Jantung,"beta-blocker"
-Hipertensi,"losartan"
-Hipertensi,"Amlodipine"
-Hipertensi,"lisinopril"
-Diabetes Melitus,"insulin"
-Diabetes Melitus,"Metformin"
-Diabetes Melitus,"glibenclamide"
-Dislipidemia,"ezetimibe"
-Dislipidemia,"Simvastatin"
-Dislipidemia,"atorvastatin"
-Kolesterol Tinggi,"rosuvastatin"
-Kolesterol Tinggi,"Simvastatin"
-Kolesterol Tinggi,"atorvastatin"
-Batu Ginjal,"ibuprofen"
-Batu Ginjal,"Allopurinol"
-Batu Ginjal,"tamsulosin"
-Gagal Ginjal Kronis,"vitamin D"
-Gagal Ginjal Kronis,"Furosemid"
-Gagal Ginjal Kronis,"calcium acetate"
-Osteoartritis,"glukosamin"
-Osteoartritis,"NSAID"
-Osteoartritis,"paracetamol"
-Rematik,"ibuprofen"
-Rematik,"Metotreksat"
-Rematik,"prednison"
-Sakit Pinggang (Lumbago),"diazepam"
-Sakit Pinggang (Lumbago),"Paracetamol"
-Sakit Pinggang (Lumbago),"ibuprofen"
-Alergi Kulit,"loratadine"
-Alergi Kulit,"Cetirizine"
-Alergi Kulit,"hydrocortisone cream"
-Dermatitis Kontak,"cetirizine"
-Dermatitis Kontak,"Hydrocortisone cream"
-Dermatitis Kontak,"betamethasone"
-Infeksi Jamur Kulit (Tinea),"terbinafine"
-Infeksi Jamur Kulit (Tinea),"Ketoconazole"
-Infeksi Jamur Kulit (Tinea),"clotrimazole"
-Varicella (Cacar Air),"parasetamol"
-Varicella (Cacar Air),"Asiklovir"
-Varicella (Cacar Air),"calamine lotion"
-Measles (Campak),"parasetamol"
-Measles (Campak),"Vitamin A"
-Measles (Campak),"antihistamin"
-Gondongan,"ibuprofen"
-Gondongan,"Istirahat"
-Gondongan,"parasetamol"
-Otitis Media,"tetes telinga"
-Otitis Media,"Amoxicillin"
-Otitis Media,"ibuprofen"
-Konjungtivitis,"tetes mata antihistamin"
-Konjungtivitis,"Tetes mata antibiotik"
+Anemia Defisiensi Zat Besi,ferrous sulfate
+Anemia Defisiensi Zat Besi,ferrous gluconate
+Anemia Defisiensi Zat Besi,ferrous fumarate
+Anemia Defisiensi Zat Besi,vitamin C
+Anemia Defisiensi Vitamin B12,Vitamin B12 injeksi
+Anemia Defisiensi Vitamin B12,Vitamin B12 pil oral
+Anemia Defisiensi Asam Folat (Vitamin B9),Suplemen asam folat
+Anemia Aplastik/Hemolitik,imunoterapi
+Anemia Aplastik/Hemolitik,cyclosporine
+Anemia Aplastik/Hemolitik,ATG (antithymocyte globulin)
+Malaria Plasmodium falciparum tanpa komplikasi,Artemether-Lumefantrine (Coartem)
+Malaria Plasmodium falciparum tanpa komplikasi,Dihydroartemisinin-Piperaquine
+Malaria Plasmodium vivax/Plasmodium ovale,Chloroquine
+Malaria Plasmodium vivax/Plasmodium ovale,Primaquine
+Malaria berat/komplikasi,Artesunate intravena/intramuskular
+Malaria berat/komplikasi,Quinidine intravena
+Malaria pada kehamilan,Quinine
+Malaria pada kehamilan,Clindamycin
+Malaria pada kehamilan,Artemether-Lumefantrine
+Cacing Kremi (Enterobius vermicularis),Albendazole
+Cacing Kremi (Enterobius vermicularis),Mebendazole
+Cacing Kremi (Enterobius vermicularis),Pyrantel pamoate
+Cacing Gelang (Ascaris lumbricoides),Albendazole
+Cacing Gelang (Ascaris lumbricoides),Mebendazole
+Cacing Gelang (Ascaris lumbricoides),Pyrantel pamoate
+Cacing Tambang (Ancylostoma duodenale/Necator americanus),Albendazole
+Cacing Tambang (Ancylostoma duodenale/Necator americanus),Mebendazole
+Cacing Pita (Taenia spp.),Praziquantel
+Cacing Pita (Taenia spp.),Niclosamide
+Strongyloides stercoralis (Infeksi cacing benang),Ivermectin
+Strongyloides stercoralis (Infeksi cacing benang),Albendazole
+Diare,Oralit (Larutan Rehidrasi Oral)
+Diare,Larutan garam & gula
+Diare Antibiotik (hanya jika infeksi bakteri terkonfirmasi),Ciprofloxacin
+Diare Antibiotik (hanya jika infeksi bakteri terkonfirmasi),Azithromycin
+Diare Antibiotik (hanya jika infeksi bakteri terkonfirmasi),Metronidazole
+Diare Antibiotik (hanya jika infeksi bakteri terkonfirmasi),Tinidazole
+Diare Antibiotik (hanya jika infeksi bakteri terkonfirmasi),Rifaximin
+Antidiarrea (Opsional & Harus dengan Hati-hati),Loperamide
+Antidiarrea (Opsional & Harus dengan Hati-hati),Bismuth subsalicylate
+Demam Berdarah Dengue (DBD),Istirahat total
+Demam Berdarah Dengue (DBD),Paracetamol
+Demam Berdarah Dengue (DBD),Oralit/cairan elektrolit
+Demam Berdarah Dengue (DBD),infus cairan intravena
+Demam Berdarah Dengue (DBD),cairan infus
+Tifus,Ciprofloxacin
+Tifus,Azithromycin
+Tifus,Ceftriaxone
+Tifus,Chloramphenicol
+Tifus,Paracetamol
+Tifus,Istirahat Total
+Tifus,Oralit/cairan elektrolit
+Influenza,Oseltamivir (Tamiflu)
+Influenza,Zanamivir (Relenza)
+Influenza,Baloxavir marboxil
+Influenza,Antihistamin
+Influenza,Paracetamol/Ibuprofen
+Influenza,Dekongestan
+Faringitis Akibat Virus,Paracetamol/Ibuprofen
+Faringitis Akibat Virus,loratadine/cetirizine
+Faringitis Akibat Iritasi atau Alergi,fexofenadine
+Faringitis Akibat Iritasi atau Alergi,cetirizine
+Faringitis Akibat Iritasi atau Alergi,Loratadine
+Faringitis Bakteri ( akibat Streptococcus),Cefuroxime/Azithromycin
+Faringitis Bakteri ( akibat Streptococcus),Penisilin V/Amoksisilin
+Bronkitis Akut,Paracetamol/Ibuprofen
+Bronkitis Akut,pseudoefedrin
+Bronkitis Akut,loratadine atau cetirizine
+Bronkitis Akut,guaifenesin
+Bronkitis Akut,dekstrometorfan
+Bronkitis Kronis (berhubungan dengan Penyakit Paru Obstruktif Kronik atau PPOK),albuterol/ipratropium
+Bronkitis Kronis (berhubungan dengan Penyakit Paru Obstruktif Kronik atau PPOK),budesonide/fluticasone
+Bronkitis Kronis (berhubungan dengan Penyakit Paru Obstruktif Kronik atau PPOK),Azitromisin
+Bronkitis Bakteri,penisilin
+Bronkitis Bakteri,azithromycin
+Pneumonia Bakteri,Amoksisilin-klavulanat
+Pneumonia Bakteri,Levofloxacin/Moksifloksasin
+Pneumonia Bakteri,Ceftriaxone/Cefotaxime
+Pneumonia Virus,Oseltamivir (Tamiflu)
+Pneumonia Virus,Remdesivir
+Pneumonia Virus,Deksametason/Prednison
+Pneumonia Jamur,Flukonazol/Itrakonazol
+Pneumonia Jamur,Amfoterisin B
+"Pneumonia Aspirasi (disebabkan masuknya makanan, minuman, atau cairan tubuh ke paru-paru)",Clindamycin/Piperacillin-tazobactam
+"Pneumonia Aspirasi (disebabkan masuknya makanan, minuman, atau cairan tubuh ke paru-paru)",Terapi Oksigen
+"Pneumonia Aspirasi (disebabkan masuknya makanan, minuman, atau cairan tubuh ke paru-paru)",Drainase Postural
+Pneumonia pada Pasien dengan Kondisi Khusus (seperti PPOK atau diabetes),evofloxacin/moksifloksasin
+Pneumonia pada Pasien dengan Kondisi Khusus (seperti PPOK atau diabetes),albuterol/ipratropium
+Pneumonia pada Pasien dengan Kondisi Khusus (seperti PPOK atau diabetes),Terapi Oksigen
+Asma Intermiten,albuterol/levalbuterol
+Asma Intermiten,Inhaler SABA
+Asma Persisten Ringan hingga Sedang,"Beclomethasone, Budesonide, Fluticasone"
+Asma Persisten Ringan hingga Sedang,salmeterol/formoterol
+Asma Persisten Ringan hingga Sedang,Budesonide-Formoterol
+Asma Persisten Sedang hingga Berat,Budesonide/Fluticasone
+Asma Persisten Sedang hingga Berat,Budesonide-Formoterol
+Asma Persisten Sedang hingga Berat,Fluticasone-Salmeterol
+Asma Persisten Sedang hingga Berat,Montelukast/Zafirlukast
+Asma Persisten Sedang hingga Berat,Prednison/Methylprednisolone
+Asma Berat atau Tidak Terkontrol,Omalizumab
+Asma Berat atau Tidak Terkontrol,Mepolizumab/Benralizumab
+Asma Berat atau Tidak Terkontrol,Kortikosteroid Oral
+Gagal Jantung,Enalapril
+Gagal Jantung,Lisinopril
+Gagal Jantung,Ramipril
+Gagal Jantung,Losartan
+Gagal Jantung,Candesartan
+Gagal Jantung,Valsartan
+Gagal Jantung,Bisoprolol
+Gagal Jantung,Carvedilol
+Gagal Jantung,Metoprolol Succinate
+Gagal Jantung,Furosemide
+Gagal Jantung,Torsemide
+Gagal Jantung,Spironolactone
+Gagal Jantung,Eplerenone
+Gagal Jantung,Sacubitril/Valsartan
+Hipertensi,Hidroklorotiazid
+Hipertensi,Klorotiazid
+Hipertensi,Furosemide
+Hipertensi,Spironolactone
+Hipertensi,Losartan
+Hipertensi,Valsartan
+Hipertensi,Candesartan
+Hipertensi,Verapamil
+Hipertensi,Atenolol
+Hipertensi,Metoprolol
+Hipertensi,Bisoprolol
+Hipertensi,Doxazosin
+Hipertensi,Clonidine
+Hipertensi,Methyldopa
+Hipertensi,Hydralazine
+Hipertensi,Minoxidil
+Hipertensi,ACE inhibitor/ARB
+Hipertensi,Losartan-Hidroklorotiazid
+Hipertensi,Amlodipine-Benalapril
+Hipertensi,Prazosin
+Hipertensi,Amlodipine
+Hipertensi,Nifedipine
+Hipertensi,Diltiazem
+Hipertensi,Lisinopril
+Hipertensi,Enalapril
+Hipertensi,Ramipril
+Diabetes Melitus Tipe 1,Insulin glargine
+Diabetes Melitus Tipe 1,Insulin detemir
+Diabetes Melitus Tipe 1,Insulin lispro
+Diabetes Melitus Tipe 1,Insulin aspart
+Diabetes Melitus Tipe 1,Insulin glulisine
+Diabetes Melitus Tipe 1,insulin basal
+Diabetes Melitus Tipe 1,insulin bolus
+Diabetes Melitus Tipe 2,Metformin
+Diabetes Melitus Tipe 2,Glipizide
+Diabetes Melitus Tipe 2,Glibenclamide
+Diabetes Melitus Tipe 2,Glimepiride
+Diabetes Melitus Tipe 2,Pioglitazone
+Diabetes Melitus Tipe 2,Sitagliptin
+Diabetes Melitus Tipe 2,Linagliptin
+Diabetes Melitus Tipe 2,Saxagliptin
+Diabetes Melitus Tipe 2,Liraglutide
+Diabetes Melitus Tipe 2,Exenatide
+Diabetes Melitus Tipe 2,Dapagliflozin
+Diabetes Melitus Tipe 2,Empagliflozin
+Diabetes Melitus Tipe 2,Canagliflozin
+Dislipidemia,Atorvastatin
+Dislipidemia,Simvastatin
+Dislipidemia,Rosuvastatin
+Dislipidemia,Pravastatin
+Dislipidemia,Ezetimibe
+Dislipidemia,Gemfibrozil
+Dislipidemia,Fenofibrate
+Dislipidemia,Niacin (Niaspan)
+Dislipidemia,Evolocumab (Repatha)
+Dislipidemia,Alirocumab (Praluent)
+Dislipidemia,Icosapent ethyl (Vascepa)
+Dislipidemia,suplemen minyak ikan
+Dislipidemia,Cholestyramine
+Dislipidemia,Colestipol
+Dislipidemia,Colesevelam
+Kolesterol LDL,Atorvastatin
+Kolesterol LDL,Simvastatin
+Kolesterol LDL,Rosuvastatin
+Kolesterol LDL,Pravastatin
+Kolesterol LDL,Ezetimibe
+Kolesterol LDL,Gemfibrozil
+Kolesterol LDL,Fenofibrate
+Kolesterol LDL,Alirocumab (Praluent)
+Kolesterol LDL,Evolocumab (Repatha)
+Gagal Ginjal,Lisinopril
+Gagal Ginjal,Ramipril (ACE Inhibitor
+Gagal Ginjal,Losartan
+Gagal Ginjal,Valsartan (ARB)
+Gagal Ginjal,Furosemide
+Gagal Ginjal,Bumetanide
+Gagal Ginjal,Torasemide
+Gagal Ginjal,Kalsium Asetat
+Gagal Ginjal,Sevelamer
+Gagal Ginjal,Lanthanum Karbonat
+Gagal Ginjal,Kalsitriol
+Gagal Ginjal,Kalsium Karbonat
+Gagal Ginjal,Sodium Polystyrene Sulfonate (Kayexalate)
+Gagal Ginjal,Patiromer
+Gagal Ginjal,Epoetin Alfa
+Gagal Ginjal,Darbepoetin Alfa
+Gagal Ginjal,Ferrous Sulfate (oral)
+Gagal Ginjal,Iron Sucrose (intravena)
+Gagal Ginjal,Sodium Bicarbonate (tablet atau larutan)
+Osteoartritis,Parasetamol
+Osteoartritis,ibuprofen/naproksen
+Osteoartritis,Diclofenac gel
+Osteoartritis,Kortikosteroid
+Osteoartritis,Asam Hialuronat
+Osteoartritis,Glukosamin
+Osteoartritis,Kondroitin
+Osteoartritis,Duloxetine
+Osteoartritis,Tramadol
+Rematik,Ibuprofen
+Rematik,Naproksen
+Rematik,Diclofenac
+Rematik,Prednison
+Rematik,Methylprednisolone
+Rematik,Methotrexate
+Rematik,Sulfasalazine
+Rematik,Leflunomide
+Rematik,Adalimumab (Humira)
+Rematik,Etanercept (Enbrel)
+Rematik,Infliximab (Remicade)
+Rematik,Tofacitinib (Xeljanz)
+Rematik,Baricitinib (Olumiant)
+Sakit Pinggang (Lumbago),Cyclobenzaprine
+Sakit Pinggang (Lumbago),Tizanidine
+Sakit Pinggang (Lumbago),Prednison
+Sakit Pinggang (Lumbago),Injeksi Epidural Kortikosteroid
+Sakit Pinggang (Lumbago),Duloxetine
+Sakit Pinggang (Lumbago),Amitriptyline
+Alergi Kulit,Cetirizine
+Alergi Kulit,Loratadine
+Alergi Kulit,Diphenhydramine
+Alergi Kulit,Hidrokortison 1%
+Alergi Kulit,riamcinolone Acetonide
+Alergi Kulit,Tacrolimus Ointment
+Alergi Kulit,Pimecrolimus Cream
+Alergi Kulit,Prednison
+Alergi Kulit,Krim/Gel Diphenhydramine
+Alergi Kulit,Montelukast
+Dermatitis Kontak,Cetirizine
+Dermatitis Kontak,Loratadine
+Dermatitis Kontak,Diphenhydramine
+Dermatitis Kontak,Hidrokortison 1%
+Dermatitis Kontak,Triamcinolone Acetonide
+Dermatitis Kontak,Prednison
+Dermatitis Kontak,Mupirocin Ointment
+Dermatitis Kontak,Amoxicillin
+Dermatitis Kontak,Cephalexin
+Infeksi Jamur Kulit (Tinea),terbinafine
+Infeksi Jamur Kulit (Tinea),Ketoconazole
+Infeksi Jamur Kulit (Tinea),clotrimazole
+Infeksi Jamur Kulit (Tinea),Clotrimazole Cream 1%
+Infeksi Jamur Kulit (Tinea),Ketoconazole Cream 2%
+Infeksi Jamur Kulit (Tinea),Terbinafine Cream 1%
+Infeksi Jamur Kulit (Tinea),Miconazole Cream
+Infeksi Jamur Kulit (Tinea),Terbinafine Tablet
+Infeksi Jamur Kulit (Tinea),Fluconazole
+Infeksi Jamur Kulit (Tinea),Itraconazole
+Infeksi Jamur Kulit (Tinea),Griseofulvin
+Infeksi Jamur Kulit (Tinea),Terbinafine
+Infeksi Jamur Kulit (Tinea),Miconazole Powder
+Varicella (Cacar Air),Acyclovir
+Varicella (Cacar Air),Valacyclovir
+Varicella (Cacar Air),Cetirizine
+Varicella (Cacar Air),Diphenhydramine
+Varicella (Cacar Air),Parasetamol
+Varicella (Cacar Air),Calamine Lotion
+Varicella (Cacar Air),Losion Mentol
+Varicella (Cacar Air),Mupirocin Ointment
+Measles (Campak),Parasetamol
+Measles (Campak),Ibuprofen
+Measles (Campak),Vitamin A Suplemen
+Measles (Campak),Sirup Antitusif
+Measles (Campak),Air Hangat dengan Madu dan Lemon
+Measles (Campak),Tetes Hidung Saline
+Measles (Campak),Inhalasi Uap
+Measles (Campak),Calamine Lotion
+Measles (Campak),"Vaksinasi MMR (Measles, Mumps, Rubella)"
+Gondongan,Parasetamol
+Gondongan,Ibuprofen
+Gondongan,parasetamol
+Gondongan,Kompres Dingin atau Hangat
+Gondongan,Pijat Lembut
+Gondongan,Ibuprofen/Naproxen
+Gondongan,Air Garam Hangat
+Gondongan,Istirahat yang Cukup
+Gondongan,"Vaksinasi MMR (Measles, Mumps, Rubella)"
+Otitis Media,Amoxicillin
+Otitis Media,Amoxicillin-Clavulanate
+Otitis Media,Cefdinir/Cefuroxime
+Otitis Media,Parasetamol (Acetaminophen)
+Otitis Media,Ibuprofen
+Otitis Media,Tetes Telinga Benzocaine
+Otitis Media,Lidocaine Telinga
+Otitis Media,Pseudoephedrine/Phenylephrine
+Otitis Media,Cetirizine/Loratadine
+Konjungtivitis,Tetes Mata Tobramycin 0.3%
+Konjungtivitis,Tetes Mata Ciprofloxacin 0.3%
+Konjungtivitis,Salep Mata Erythromycin 0.5%
+Konjungtivitis,Acyclovir Salep Mata
+Konjungtivitis,Olopatadine 0.1% (Pataday)
+Konjungtivitis,Ketotifen 0.025%
+Konjungtivitis,prednisolone acetate
 Katarak,"Tidak ada obat, intervensi bedah"
-Glaukoma,"acetazolamide"
-Glaukoma,"Timolol tetes mata"
-Glaukome,"latanoprost"
-Sinusitis,"dekongestan"
-Sinusitis,"Amoxicillin"
-Sinusitis,"ibuprofen"
-Gigi Berlubang,"pengobatan gigi"
-Gigi Berlubang,"Amoxicillin"
-Gigi Berlubang,"ibuprofen"
-Gangguan Cemas,"fluoxetine"
-Gangguan Cemas,"Alprazolam"
-Gangguan Cemas,"diazepam"
-Depresi,"escitalopram"
-Depresi,"Fluoxetine"
-Depresi,"sertraline"
-Skizofrenia,"olanzapine"
-Skizofrenia,"Risperidone"
-Skizofrenia,"haloperidol"
-Demensia,"rivastigmine"
-Demensia,"Donepezil"
-Demensia,"memantine"
-Epilepsi,"fenitoin"
-Epilepsi,"Asam valproat"
-Epilepsi,"carbamazepine"
-Sakit Kepala Tegang,"amitriptyline"
-Sakit Kepala Tegang,"Parasetamol"
-Sakit Kepala Tegang,"ibuprofen"
-Migrain,"parasetamol"
-Migrain,"Sumatriptan"
-Migrain,"ergotamin"
-Gastroenteritis,"ciprofloxacin"
-Gastroenteritis,"Oralit"
-Gastroenteritis,"loperamide"
-Dispepsia,"antasida"
-Dispepsia,"Ranitidine"
-Dispepsia,"omeprazole"
-Tukak Lambung,"amoxicillin"
-Tukak Lambung,"Omeprazole"
-Tukak Lambung,"ranitidine"
-Sindrom Iritasi Usus,"antispasmodik"
-Sindrom Iritasi Usus,"Loperamide"
-Sindrom Iritasi Usus,"dicyclomine"
-Hemoroid,"hydrocortisone cream"
-Hemoroid,"Lidocaine cream"
-Hemoroid,"supositoria"
-Hepatitis A,"parasetamol"
-Hepatitis A,"Istirahat"
-Hepatitis A,"vitamin"
-Gout (Asam Urat),"NSAID"
-Gout (Asam Urat),"Allopurinol"
-Gout (Asam Urat),"colchicine"
-Sifilis,"doxycycline"
-Sifilis,"Benzathine penicillin G"
-Gonore,"azithromycin"
-Gonore,"Ceftriaxone"
-Vaginitis,"miconazole"
-Vaginitis,"Metronidazole"
-Vaginitis,"clindamycin"
-Kanker Payudara,"radioterapi"
-Kanker Payudara,"Tamoxifen"
-Kanker Payudara,"kemoterapi"
-Kanker Serviks,"pembedahan"
-Kanker Serviks,"Kemoterapi"
-Kanker Serviks,"radioterapi"
-Obesitas,"diet dan olahraga"
-Obesitas,"Orlistat"
-Obesitas,"sibutramine"
-Cacar Monyet (Monkeypox),"Tidak ada pengobatan khusus, simtomatik"
+Glaukoma,Latanoprost (Xalatan)
+Glaukoma,Travoprost (Travatan)
+Glaukoma,Timolol (Timoptic)
+Glaukoma,Betaxolol
+Glaukoma,Brimonidine (Alphagan)
+Glaukoma,Dorzolamide (Trusopt)
+Glaukoma,Brinzolamide (Azopt)
+Glaukoma,Netarsudil (Rhopressa)
+Glaukoma,Acetazolamide (Diamox)
+Glaukoma,Methazolamide
+Glaukoma,Trabeculoplasty Laser
+Glaukoma,Iridotomi Laser
+Glaukoma,Trabeculectomy
+Sinusitis,Pseudoephedrine (Sudafed)
+Sinusitis,Oxymetazoline Spray (Afrin)
+Sinusitis,Ibuprofen (Advil)
+Sinusitis,Parasetamol (Acetaminophen)
+Sinusitis,Cetirizine (Zyrtec)
+Sinusitis,Loratadine (Claritin)
+Sinusitis,Amoxicillin-Clavulanate (Augmentin)
+Sinusitis,Doxycycline
+Sinusitis,Azithromycin
+Sinusitis,Fluticasone (Flonase)
+Sinusitis,Ibuprofen (Advil)
+Gigi Berlubang,Parasetamol (Acetaminophen)
+Gigi Berlubang,Amoxicillin
+Gigi Berlubang,Clindamycin
+Gigi Berlubang,Metronidazole
+Gigi Berlubang,Chlorhexidine Gluconate 0.12%
+Gigi Berlubang,Hidrogen Peroksida 3%
+Gigi Berlubang,Benzocaine Gel atau Cairan 20%
+Gangguan Cemas,Sertraline (Zoloft)
+Gangguan Cemas,Paroxetine (Paxil)
+Gangguan Cemas,Escitalopram (Lexapro)
+Gangguan Cemas,Venlafaxine (Effexor XR)
+Gangguan Cemas,Duloxetine (Cymbalta)
+Gangguan Cemas,Alprazolam (Xanax)
+Gangguan Cemas,Lorazepam (Ativan)
+Gangguan Cemas,Diazepam (Valium)
+Gangguan Cemas,Imipramine
+Gangguan Cemas,Clomipramine
+Gangguan Cemas,Buspirone (Buspar)
+Gangguan Cemas,Propranolol
+Depresi,Sertraline (Zoloft)
+Depresi,Fluoxetine (Prozac)
+Depresi,Citalopram (Celexa)
+Depresi,Escitalopram (Lexapro)
+Depresi,Venlafaxine (Effexor XR)
+Depresi,Duloxetine (Cymbalta)
+Depresi,Bupropion (Wellbutrin)
+Depresi,Mirtazapine (Remeron)
+Depresi,Amitriptyline
+Depresi,Nortriptyline
+Depresi,Phenelzine (Nardil)
+Depresi,Tranylcypromine (Parnate)
+Depresi,Lithium
+Depresi,Quetiapine (Seroquel)
+Depresi,Aripiprazole (Abilify)
+Skizofrenia,Risperidone (Risperdal)
+Skizofrenia,Olanzapine (Zyprexa)
+Skizofrenia,Quetiapine (Seroquel)
+Skizofrenia,Aripiprazole (Abilify)
+Skizofrenia,Clozapine (Clozaril)
+Skizofrenia,Haloperidol (Haldol)
+Skizofrenia,Chlorpromazine (Thorazine)
+Skizofrenia,Fluphenazine
+Skizofrenia,Risperidone Long-Acting Injection (Risperdal Consta)
+Skizofrenia,Aripiprazole Long-Acting Injection (Abilify Maintena)
+Skizofrenia,Paliperidone Palmitate (Invega Sustenna)
+Skizofrenia,Benztropine (Cogentin)
+Skizofrenia,Propranolol
+Skizofrenia,Vitamin E
+Demensia,Donepezil (Aricept)
+Demensia,Rivastigmine (Exelon)
+Demensia,Galantamine (Razadyne)
+Demensia,Memantine (Namenda)
+Demensia,Donepezil dan Memantine Kombinasi (Namzaric)
+Demensia,Risperidone
+Demensia,Olanzapine
+Demensia,Sertraline (Zoloft)
+Demensia,Citalopram (Celexa)
+Epilepsi (Fokal),Carbamazepine (Tegretol)
+Epilepsi (Fokal),Lamotrigine (Lamictal)
+Epilepsi (Fokal),Levetiracetam (Keppra)
+Epilepsi (Fokal),Oxcarbazepine (Trileptal)
+Epilepsi Generalisasi (Termasuk Kejang Tonik-Klonik),Valproate (Depakote)
+Epilepsi Generalisasi (Termasuk Kejang Tonik-Klonik),Topiramate (Topamax)
+Epilepsi Generalisasi (Termasuk Kejang Tonik-Klonik),Phenobarbital
+Epilepsi Generalisasi (Termasuk Kejang Tonik-Klonik),Zonisamide (Zonegran)
+Epilepsi Absans (Petit Mal),Ethosuximide (Zarontin)
+Epilepsi Absans (Petit Mal),Valproate (Depakote)
+Epilepsi Refrakter (Epilepsi yang Sulit Diobati),Perampanel (Fycompa)
+Epilepsi Refrakter (Epilepsi yang Sulit Diobati),Lacosamide (Vimpat)
+Epilepsi Refrakter (Epilepsi yang Sulit Diobati),Clobazam (Frisium)
+Epileptikus (Kejang yang Tidak Berhenti),Lorazepam (Ativan)
+Epileptikus (Kejang yang Tidak Berhenti),Diazepam (Valium)
+Epileptikus (Kejang yang Tidak Berhenti),Phenytoin (Dilantin)
+Epileptikus (Kejang yang Tidak Berhenti),Midazolam (Versed)
+Sakit Kepala Tegang,Parasetamol (Acetaminophen)
+Sakit Kepala Tegang,"Ibuprofen (Advil, Motrin)"
+Sakit Kepala Tegang,Aspirin
+Sakit Kepala Tegang,Excedrin
+Sakit Kepala Tegang,Ibuprofen dan Kafein
+Sakit Kepala Tegang,Cyclobenzaprine (Flexeril)
+Sakit Kepala Tegang,Tizanidine (Zanaflex)
+Sakit Kepala Tegang,Amitriptyline
+Sakit Kepala Tegang,Nortriptyline
+Sakit Kepala Tegang,Topiramate (Topamax)
+Sakit Kepala Tegang,Gabapentin (Neurontin)
+Migrain,Parasetamol (Acetaminophen)
+Migrain,Naproxen (Aleve)
+Migrain,"Ibuprofen (Advil, Motrin)"
+Migrain,Aspirin
+Migrain,Ketorolac (Toradol)
+Migrain,Sumatriptan (Imitrex)
+Migrain,Rizatriptan (Maxalt)
+Migrain,Zolmitriptan (Zomig)
+Gastroenteritis,Oral Rehydration Solution (ORS)
+Gastroenteritis,Metoclopramide (Reglan)
+Gastroenteritis,Ondansetron (Zofran)
+Gastroenteritis,Loperamide (Imodium)
+Gastroenteritis,Azithromycin
+Gastroenteritis,Ciprofloxacin
+Gastroenteritis,Metronidazole (Flagyl)
+Dispepsia,"Magnesium Hidroksida (Mylanta, Maalox)"
+Dispepsia,Kalsium Karbonat (Tums)
+Dispepsia,Ranitidine
+Dispepsia,Famotidine (Pepcid)
+Dispepsia,Cimetidine (Tagamet)
+Dispepsia,Omeprazole (Prilosec)
+Dispepsia,Lansoprazole (Prevacid)
+Dispepsia,Pantoprazole (Protonix)
+Dispepsia,Metoclopramide (Reglan)
+Dispepsia,Domperidone
+Dispepsia,Amoxicillin
+Dispepsia,Clarithromycin
+Dispepsia,Metronidazole
+Dispepsia,PPI
+Dispepsia,Amitriptyline
+Dispepsia,Nortriptyline
+Tukak Lambung,Omeprazole (Prilosec)
+Tukak Lambung,Lansoprazole (Prevacid)
+Tukak Lambung,Pantoprazole (Protonix)
+Tukak Lambung,Esomeprazole (Nexium)
+Tukak Lambung,Ranitidine
+Tukak Lambung,Famotidine (Pepcid)
+Tukak Lambung,Cimetidine (Tagamet)
+Tukak Lambung,Sukralfat (Carafate)
+Tukak Lambung,Bismuth Subsalicylate
+Tukak Lambung,Amoxicillin
+Tukak Lambung,Clarithromycin
+Tukak Lambung,omeprazole
+Tukak Lambung,Kalsium Karbonat (Tums)
+Tukak Lambung,Magnesium Hidroksida
+Tukak Lambung,Aluminium Hidroksida
+Tukak Lambung,Metoclopramide (Reglan)
+Tukak Lambung,Domperidone
+Sindrom Iritasi Usus,Hyoscine butylbromide (Buscopan)
+Sindrom Iritasi Usus,Dicyclomine (Bentyl)
+Sindrom Iritasi Usus,Mebeverine
+Sindrom Iritasi Usus,Polietilen Glikol (MiraLAX)
+Sindrom Iritasi Usus,Psyllium Husk (Metamucil)
+Sindrom Iritasi Usus,Lactulose
+Sindrom Iritasi Usus,Loperamide (Imodium)
+Sindrom Iritasi Usus,Bismuth Subsalicylate (Pepto-Bismol)
+Sindrom Iritasi Usus,Domperidone
+Sindrom Iritasi Usus,Metoclopramide (Reglan)
+Sindrom Iritasi Usus,Amitriptyline
+Sindrom Iritasi Usus,Nortriptyline
+Sindrom Iritasi Usus,Lubiprostone (Amitiza)
+Sindrom Iritasi Usus,Alosetron (Lotronex)
+Hemoroid,Krim Hemoroid
+Hemoroid,Anestesi Topikal
+Hemoroid,ibuprofen/paracetamol
+Hemoroid,"Krim Hemoroid dengan Hidrokortison 2,5%"
+Hemoroid,witch hazel
+Hemoroid,zinc oxide
+Hemoroid,diosmin
+Hemoroid,hesperidin
+Hemoroid,hidrokortison
+Hepatitis A,Ringer Laktat
+Hepatitis A,Dextrose Saline
+Hepatitis A,metoklopramid
+Hepatitis A,Paracetamol
+Gout (Asam Urat),Kolkisin
+Gout (Asam Urat),Prednison
+Gout (Asam Urat),Allopurinol
+Gout (Asam Urat),Febuksostat
+Gout (Asam Urat),Probenesid
+Gout (Asam Urat),NSAID
+Gout (Asam Urat),kolkisin
+Gout (Asam Urat),Vitamin C
+Sifilis,Benzatin Penisilin
+Sifilis,doksisiklin
+Sifilis,tetrasiklin
+Sifilis,Aqueous Crystalline Penisilin
+Sifilis,Prokain Penisilin
+Sifilis,Probenesid
+Gonore,Ceftriaxone
+Gonore,Cefixime
+Gonore,Doxycycline
+Gonore,Azitromisin
+Vaginitis,Metronidazole
+Vaginitis,Clindamycin Krim 2%
+Vaginitis,Fluconazole
+Vaginitis,estradiol
+Vaginitis,conjugated estrogens
+Vaginitis,Ring Vaginal Estrogen
+Vaginitis,Moisturizer
+Kanker Payudara Stadium Awal (Stadium 0-1),Lumpektomi atau Mastektomi
+Kanker Payudara Stadium Awal (Stadium 0-1),Terapi radiasi
+Kanker Payudara Stadium Awal (Stadium 0-1),Tamoxifen
+Kanker Payudara Stadium Awal (Stadium 0-1),letrozole
+Kanker Payudara Stadium Awal (Stadium 0-1),anastrozole
+Kanker Payudara Stadium 2-3 (Kanker Lokal Lanjut),doxorubicin
+Kanker Payudara Stadium 2-3 (Kanker Lokal Lanjut),cyclophosphamide
+Kanker Payudara Stadium 2-3 (Kanker Lokal Lanjut),paclitaxel
+Kanker Payudara Stadium 2-3 (Kanker Lokal Lanjut),docetaxel
+Kanker Payudara Stadium 2-3 (Kanker Lokal Lanjut),Lumpektomi atau mastektomi
+Kanker Payudara Stadium 2-3 (Kanker Lokal Lanjut),Terapi radiasi
+Kanker Payudara Stadium 2-3 (Kanker Lokal Lanjut),Tamoxifen atau Inhibitor Aromatase
+Kanker Payudara Stadium 2-3 (Kanker Lokal Lanjut),Trastuzumab
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),paclitaxel
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),capecitabine
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),gemcitabine
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),vinorelbine
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),Fulvestrant
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),Letrozole
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),Exemestane
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),palbociclib
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),ribociclib
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),trastuzumab
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),kemoterapi
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),pertuzumab
+Kanker Payudara Stadium 4 (Metastatik atau Kanker yang Menyebar ke Organ Lain),Pembrolizumab atau atezolizumab
+"Kanker Payudara Triple-Negatif (Tidak Respon Terhadap Estrogen, Progesteron, atau HER2)",Carboplatin
+Kanker Payudara,paclitaxel
+Kanker Payudara,doxorubicin
+Kanker Payudara,Pembrolizumab
+Kanker Payudara,Ondansetron
+Kanker Payudara,Granisetron
+Kanker Payudara,dexamethasone
+Kanker Serviks Pra-Kanker atau Stadium Awal (Stadium 0 dan IA),Krioterapi atau terapi laser
+Kanker Serviks Pra-Kanker atau Stadium Awal (Stadium 0 dan IA),LEEP (Loop Electrosurgical Excision Procedure) atau konisasi (eksisi kerucut)
+Kanker Serviks Stadium IB dan IIA (Kanker Serviks Lokal Terbatas pada Serviks dan Bagian Atas Vagina),Radikal histerektomi
+Kanker Serviks Stadium IB dan IIA (Kanker Serviks Lokal Terbatas pada Serviks dan Bagian Atas Vagina),Trakelektomi radikal
+Kanker Serviks Stadium IB dan IIA (Kanker Serviks Lokal Terbatas pada Serviks dan Bagian Atas Vagina),Kemoradiasi dengan cisplatin
+"Kanker Serviks Stadium IIB dan III (Kanker Menyebar Lebih Lanjut ke Jaringan Sekitar, tapi Belum ke Organ Jauh)",Cisplatin
+"Kanker Serviks Stadium IIB dan III (Kanker Menyebar Lebih Lanjut ke Jaringan Sekitar, tapi Belum ke Organ Jauh)",carboplatin atau kombinasi dengan paclitaxel
+"Kanker Serviks Stadium IIB dan III (Kanker Menyebar Lebih Lanjut ke Jaringan Sekitar, tapi Belum ke Organ Jauh)",brachytherapy
+"Kanker Serviks Stadium IV (Kanker yang Menyebar ke Organ Jauh, seperti Kandung Kemih, Rektum, atau Organ Lain)",Cisplatin dan paclitaxel
+"Kanker Serviks Stadium IV (Kanker yang Menyebar ke Organ Jauh, seperti Kandung Kemih, Rektum, atau Organ Lain)","cisplatin, paclitaxel, dan bevacizumab"
+"Kanker Serviks Stadium IV (Kanker yang Menyebar ke Organ Jauh, seperti Kandung Kemih, Rektum, atau Organ Lain)",Bevacizumab
+"Kanker Serviks Stadium IV (Kanker yang Menyebar ke Organ Jauh, seperti Kandung Kemih, Rektum, atau Organ Lain)",Ondansetron atau granisetron
+"Kanker Serviks Stadium IV (Kanker yang Menyebar ke Organ Jauh, seperti Kandung Kemih, Rektum, atau Organ Lain)",Filgrastim atau pegfilgrastim
+"Kanker Serviks Stadium IV (Kanker yang Menyebar ke Organ Jauh, seperti Kandung Kemih, Rektum, atau Organ Lain)",Parasetamol atau NSAID
+Obesitas,Diet Rendah Kalori
+Obesitas,Diet Rendah Karbohidrat
+Obesitas,Diet Rendah Lemak
+Obesitas,Orlistat
+Obesitas,Liraglutide (Saxenda)
+Obesitas,Phentermine/Topiramate (Qsymia)
+Obesitas,Naltrexone/Bupropion (Contrave)
+Cacar Monyet (Monkeypox),Isolasi Mandiri
+Cacar Monyet (Monkeypox),Istirahat Cukup
+Cacar Monyet (Monkeypox),Pola Makan Sehat
+,Vaksin Jynneos
