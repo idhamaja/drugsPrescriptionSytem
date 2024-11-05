@@ -45,7 +45,6 @@ class PasienController extends Controller
     // Fungsi untuk menyimpan data pasien
     public function simpanData(Request $request)
     {
-        // Validasi input
         $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'gender' => 'required|string',
@@ -55,23 +54,25 @@ class PasienController extends Controller
         ]);
 
         try {
+            // Pisahkan resep obat yang masih aktif
+            $resep_obat = array_filter(explode(', ', $validatedData['resep_obat']), function ($obat) {
+                return !empty($obat); // Hanya simpan resep yang tidak kosong
+            });
+
             // Simpan data pasien ke database
             $pasien = new Pasien();
             $pasien->nama = $validatedData['nama'];
             $pasien->gender = $validatedData['gender'];
             $pasien->umur = $validatedData['umur'];
             $pasien->diagnosa = $validatedData['diagnosa'];
-            $pasien->resep_obat = $validatedData['resep_obat'];
-            $pasien->save(); // Simpan ke database
+            $pasien->resep_obat = implode(', ', $resep_obat); // Gabungkan resep aktif menjadi string
+            $pasien->save();
 
-            // Flash message jika berhasil
             return redirect()->back()->with('success', 'Diagnosa dan Resep Obat Berhasil Disimpan.');
         } catch (\Exception $e) {
-            // Flash message jika terjadi error
             return redirect()->back()->with('error', 'Data Belum Tersimpan. Terjadi kesalahan.');
         }
     }
-
 
     // Metode baru untuk menampilkan hasil rekomendasi obat
     public function hasilRekomendasi($pasien_id)

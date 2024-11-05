@@ -56,6 +56,11 @@
             display: flex;
             flex-wrap: wrap;
         }
+
+        .disabled-button {
+            pointer-events: none;
+            opacity: 0.5;
+        }
     </style>
 </head>
 
@@ -323,8 +328,8 @@
                                     $("#resep-container-" + index).empty();
                                     response["Resep Obat"].forEach(function(obat, idx) {
                                         if (idx <
-                                            4
-                                        ) { // Batasan 10 resep obat ditampilkan sebagai tombol
+                                            7
+                                        ) { // Batasan 7 resep obat ditampilkan sebagai tombol
                                             var btnHtml =
                                                 `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
                                             $("#resep-container-" + index).append(btnHtml);
@@ -408,19 +413,26 @@
                         $("#resep-container-" + index).off("click", ".resep-button").on("click",
                             ".resep-button",
                             function() {
-                                if ($("#resep-container-" + index).children().length >
-                                    1) { // Menghapus jika lebih dari satu
-                                    $(this).remove();
-                                } else {
-                                    alert("Minimal satu resep obat harus ditampilkan.");
+                                var button = $(this);
+
+                                // Konfirmasi penghapusan
+                                var confirmDelete = confirm(
+                                    "Apakah Anda yakin ingin menghapus resep obat ini?");
+
+                                if (confirmDelete) {
+                                    // Tambahkan kelas `removed` untuk resep yang dihapus
+                                    button.addClass("removed").prop("disabled", true).css("opacity", "0.5");
                                 }
                             });
                     }
 
+
+
                     // Ketika form disubmit
                     $(".modal form").off('submit').on('submit', function() {
                         var selectedObat = [];
-                        $("#resep-container-" + index + " .resep-button").each(function() {
+                        $("#resep-container-" + index + " .resep-button:not(.removed)").each(
+                    function() {
                             var text = $(this).text().trim();
                             if (text) {
                                 selectedObat.push(text);
@@ -435,6 +447,7 @@
                             value: selectedObat.join(', ')
                         }).appendTo(this);
                     });
+
                 });
             });
         </script>
