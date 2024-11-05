@@ -432,13 +432,12 @@
                     $(".modal form").off('submit').on('submit', function() {
                         var selectedObat = [];
                         $("#resep-container-" + index + " .resep-button:not(.removed)").each(
-                    function() {
-                            var text = $(this).text().trim();
-                            if (text) {
-                                selectedObat.push(text);
-                            }
-                        });
-
+                            function() {
+                                var text = $(this).text().trim();
+                                if (text) {
+                                    selectedObat.push(text);
+                                }
+                            });
                         // Menghapus dan menambahkan hidden input untuk resep obat yang dipilih
                         $(this).find("input[name='resep_obat']").remove();
                         $('<input>').attr({
@@ -447,7 +446,6 @@
                             value: selectedObat.join(', ')
                         }).appendTo(this);
                     });
-
                 });
             });
         </script>
