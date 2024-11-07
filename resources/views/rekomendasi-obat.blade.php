@@ -234,6 +234,29 @@
                 // Menghubungkan ke server SocketIO
                 var socket = io.connect('http://127.0.0.1:5000'); // Ganti dengan URL server Flask Anda
 
+                $(document).ready(function() {
+                    var socket = io.connect('http://127.0.0.1:5000'); // Sesuaikan URL server Flask Anda
+
+                    // Mendengarkan event 'new_pasien' dari server Flask
+                    socket.on('new_pasien', function(data) {
+                        // Tambahkan data pasien baru ke tabel secara otomatis
+                        var newRow = `
+            <tr>
+                <td>${data.Nama}</td>
+                <td>${data.Gender}</td>
+                <td>${data.Umur}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal">
+                        <i class="fas fa-pen"></i> Diagnosa
+                    </button>
+                </td>
+            </tr>
+        `;
+                        $('#patient-table tbody').append(newRow);
+                    });
+                });
+
+
                 // Mendengarkan event 'patient_deleted' dari backend
                 socket.on('patient_deleted', function(data) {
                     alert("Pasien dengan nama " + data.nama + " telah dihapus.");
@@ -327,14 +350,12 @@
                                 } else if (response["Resep Obat"]) {
                                     $("#resep-container-" + index).empty();
                                     response["Resep Obat"].forEach(function(obat, idx) {
-                                        if (idx <
-                                            7
-                                        ) { // Batasan 7 resep obat ditampilkan sebagai tombol
-                                            var btnHtml =
-                                                `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
-                                            $("#resep-container-" + index).append(btnHtml);
-                                        }
+                                        // Hapus batasan idx < 7 agar semua resep ditampilkan
+                                        var btnHtml =
+                                            `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
+                                        $("#resep-container-" + index).append(btnHtml);
                                     });
+
                                     // Memasukkan semua resep obat yang diterima pada hidden input
                                     $("#form-edit-" + index).find("input[name='resep_obat']")
                                         .remove();
@@ -355,6 +376,7 @@
                             }
                         });
                     }
+
 
                     // Ambil CSRF token dari meta tag
                     var csrfToken = $('meta[name="csrf-token"]').attr('content');

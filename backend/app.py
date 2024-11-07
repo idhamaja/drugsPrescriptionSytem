@@ -46,24 +46,35 @@ def test_disconnect():
 # Route to add a new patient
 @app.route('/api/add_pasien', methods=['POST'])
 def add_pasien():
+    global pasien_df  # Pastikan global variabel dideklarasikan di awal fungsi
     try:
         data = request.get_json()
+        nama = data.get('Nama').strip().lower()
+        gender = data.get('Gender').strip().lower()
+        umur = str(data.get('Umur')).strip()
+
+        # Membuat identifier unik
+        new_identifier = f"{nama}|{gender}|{umur}"
+
+        # Cek duplikasi di DataFrame
+        if any((pasien_df['Nama'].str.lower() == nama) &
+               (pasien_df['Gender'].str.lower() == gender) &
+               (pasien_df['Umur'] == umur)):
+            return jsonify({'error': 'Data pasien sudah ada.'}), 409
+
+        # Tambahkan data baru jika tidak ada duplikasi
         new_row = pd.DataFrame([data])
-        global pasien_df
-
-        # Save new data to CSV
         new_row.to_csv('models/data_pasien.csv', mode='a', header=False, index=False)
-
-        # Append the new data to the dataset
         pasien_df = pd.concat([pasien_df, new_row], ignore_index=True)
 
-        # Emit event to update the frontend in real-time
-        socketio.emit('new_pasien', data, broadcast=True)  # Emit data pasien baru ke semua klien
+        # Emit event ke frontend
+        socketio.emit('new_pasien', data, broadcast=True)
 
         return jsonify({'message': 'Patient data successfully added!'}), 200
     except Exception as e:
         logging.error("Error adding pasien: %s", e)
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, use_reloader=False, host='0.0.0.0', port=5000)
@@ -219,7 +230,7 @@ def get_recommendations(diagnosis_text):
             logging.info("No medicines found for the diagnosis.")
             return {'error': 'Tidak ada rekomendasi obat untuk diagnosis ini'}
 
-        return {'Resep Obat': recommended_obat_list[:3]}
+        return {'Resep Obat': recommended_obat_list}  # Tampilkan semua rekomendasi obat tanpa batasan
     except Exception as e:
         logging.error(f"Error in get_recommendations: {e}")
         return {'error': str(e)}
