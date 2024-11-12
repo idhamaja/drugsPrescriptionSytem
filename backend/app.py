@@ -4,6 +4,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
 import logging
+import os
 
 logging.basicConfig(level=logging.DEBUG)  # Set logging to DEBUG level
 from flask_cors import CORS
@@ -43,42 +44,57 @@ def test_connect():
 def test_disconnect():
     print("Client disconnected")
 
+# Cek keberadaan file dan muat data awal jika ada
+file_path = 'models/data_pasien.csv'
+if os.path.exists(file_path):
+    pasien_df = pd.read_csv(file_path)
+else:
+    pasien_df = pd.DataFrame(columns=['Nama', 'Gender', 'Umur'])
+
 # Route to add a new patient
 @app.route('/api/add_pasien', methods=['POST'])
 def add_pasien():
-    global pasien_df  # Pastikan global variabel dideklarasikan di awal fungsi
+    global pasien_df
     try:
         data = request.get_json()
-        nama = data.get('Nama').strip().lower()
-        gender = data.get('Gender').strip().lower()
-        umur = str(data.get('Umur')).strip()
+        logging.debug(f"Data received for new patient: {data}")
 
-        # Membuat identifier unik
-        new_identifier = f"{nama}|{gender}|{umur}"
+        # Ambil dan bersihkan input data tanpa mengubah kapitalisasi asli
+        nama = data.get('Nama', '').strip()
+        gender = data.get('Gender', '').strip()
+        umur = str(data.get('Umur', '')).strip()
 
-        # Cek duplikasi di DataFrame
-        if any((pasien_df['Nama'].str.lower() == nama) &
-               (pasien_df['Gender'].str.lower() == gender) &
-               (pasien_df['Umur'] == umur)):
+        # Validasi data input
+        if not nama or not gender or not umur:
+            logging.error("Invalid input data: Nama, Gender, and Umur are required.")
+            return jsonify({'error': 'Nama, Gender, dan Umur diperlukan'}), 400
+
+        # Cek duplikasi di DataFrame yang sudah dimuat, dengan perbandingan case-insensitive
+        if any((pasien_df['Nama'].str.lower() == nama.lower()) &
+               (pasien_df['Gender'].str.lower() == gender.lower()) &
+               (pasien_df['Umur'].astype(str) == umur)):
+            logging.info("Data pasien duplikat ditemukan.")
             return jsonify({'error': 'Data pasien sudah ada.'}), 409
 
-        # Tambahkan data baru jika tidak ada duplikasi
-        new_row = pd.DataFrame([data])
-        new_row.to_csv('models/data_pasien.csv', mode='a', header=False, index=False)
+        # Menambahkan data baru jika tidak ada duplikasi
+        new_row = pd.DataFrame([[nama, gender, umur]], columns=['Nama', 'Gender', 'Umur'])
+
+        # Tentukan file path (gunakan path yang sesuai)
+        file_path = 'models/data_pasien.csv'
+
+        new_row.to_csv(file_path, mode='a', header=not os.path.exists(file_path), index=False)
+
+        # Update DataFrame di memori
         pasien_df = pd.concat([pasien_df, new_row], ignore_index=True)
+        logging.info("Data pasien berhasil ditambahkan ke CSV dan DataFrame.")
 
-        # Emit event ke frontend
+        # Emit event ke frontend jika berhasil
         socketio.emit('new_pasien', data, broadcast=True)
+        return jsonify({'message': 'Data pasien berhasil ditambahkan!'}), 200
 
-        return jsonify({'message': 'Patient data successfully added!'}), 200
     except Exception as e:
-        logging.error("Error adding pasien: %s", e)
+        logging.error(f"Error adding pasien: {e}")
         return jsonify({'error': str(e)}), 500
-
-
-if __name__ == '__main__':
-    socketio.run(app, debug=True, use_reloader=False, host='0.0.0.0', port=5000)
-
 
 # Create TF-IDF Vectorizer for diagnosis
 try:
@@ -304,4 +320,3 @@ def save_diagnosis():
 # Jalankan server Flask dengan SocketIO
 if __name__ == '__main__':
    socketio.run(app, host='127.0.0.1', port=5000, debug=True)
-
