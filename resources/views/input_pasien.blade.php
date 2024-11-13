@@ -2,9 +2,31 @@
 <html lang="en">
 
 <head>
+    <!-- Tambahkan CSS untuk jQuery UI -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- Tambahkan jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Tambahkan jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
+    <!-- SweetAlert2 CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Input Data Pasien</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Tambahkan Socket.IO -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -26,12 +48,13 @@
     <div class="form-container d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="card">
             <div class="card-body">
+                <!-- Button Kembali ke Beranda -->
+                <div class="text-left mb-3">
+                    <a href="/rekomendasi-obat" class="btn btn-primary w-100"
+                        style="background-color: #28AE96;"">Kembali ke
+                        Beranda</a>
+                </div>
                 <h2 class="text-center mb-4">Silakan Masukan Data Pasien</h2>
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
                 <form action="/input-pasien" method="POST">
                     @csrf
                     <div class="mb-3">
@@ -55,6 +78,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Notifikasi Sukses menggunakan SweetAlert2 -->
+    <script>
+        @if (session('success'))
+            document.addEventListener("DOMContentLoaded", function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    showConfirmButton: false,
+                    timer: 3000
+                }).then(() => {
+                    window.location.href = "/rekomendasi-obat";
+                });
+            });
+        @endif
+    </script>
 </body>
 
 </html>

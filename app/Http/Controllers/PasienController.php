@@ -21,12 +21,17 @@ class PasienController extends Controller
                 // Ambil data pasien dari respons API
                 $data_pasien = $response->json();
             } else {
-                // Jika API gagal, log error dan tampilkan data kosong atau error
+                // Jika API gagal, log error dan set $data_pasien sebagai array kosong
                 Log::error('Gagal mengambil data pasien dari API');
                 $data_pasien = [];
             }
         } catch (\Exception $e) {
             Log::error('Exception saat mengambil data pasien: ' . $e->getMessage());
+            $data_pasien = [];
+        }
+
+        // Pastikan $data_pasien adalah array
+        if (!is_array($data_pasien)) {
             $data_pasien = [];
         }
 
@@ -41,7 +46,6 @@ class PasienController extends Controller
         // Kirim data pasien yang dipaginasi ke view
         return view('rekomendasi-obat', ['data_pasien' => $paginatedData]);
     }
-
     // Fungsi untuk menyimpan data pasien
     public function simpanData(Request $request)
     {
@@ -83,4 +87,6 @@ class PasienController extends Controller
         // Kirim data pasien ke view
         return view('hasil-rekomendasi', ['data_pasien' => $data_pasien]);
     }
+
+
 }

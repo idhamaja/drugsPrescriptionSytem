@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
 import logging
 import os
+import numpy as np
 
 logging.basicConfig(level=logging.DEBUG)  # Set logging to DEBUG level
 from flask_cors import CORS
@@ -35,21 +36,6 @@ def get_pasien():
         logging.error("Error in get_pasien: %s", e)
         return jsonify({'error': 'An error occurred while fetching pasien data.'}), 500
 
-# Event handler for SocketIO
-@socketio.on('connect')
-def test_connect():
-    print("Client connected")
-
-@socketio.on('disconnect')
-def test_disconnect():
-    print("Client disconnected")
-
-# Cek keberadaan file dan muat data awal jika ada
-file_path = 'models/data_pasien.csv'
-if os.path.exists(file_path):
-    pasien_df = pd.read_csv(file_path)
-else:
-    pasien_df = pd.DataFrame(columns=['Nama', 'Gender', 'Umur'])
 
 # Route to add a new patient
 @app.route('/api/add_pasien', methods=['POST'])
@@ -315,6 +301,62 @@ def save_diagnosis():
     except Exception as e:
         logging.error("Error in save_diagnosis: %s", e)
         return jsonify({'error': str(e)}), 500
+
+    # Event handler for SocketIO
+@socketio.on('connect')
+def test_connect():
+    print("Client connected")
+
+@socketio.on('disconnect')
+def test_disconnect():
+    print("Client disconnected")
+
+# Function to categorize age
+def kategori_umur(umur):
+    if umur < 18:
+        return "Anak-anak"
+    elif 18 <= umur < 30:
+        return "Dewasa Muda"
+    elif 30 <= umur < 60:
+        return "Dewasa"
+    else:
+        return "Lansia"
+
+# Route to get grouped medication data
+@app.route('/api/pengelompokan_resep_obat', methods=['GET'])
+def pengelompokan_resep_obat():
+    try:
+        # Assign random diagnosis from diagnosis_df to each patient in pasien_df for simulation
+        np.random.seed(0)  # For reproducibility
+        pasien_df['Diagnosis'] = np.random.choice(diagnosis_df['Diagnosis'], size=len(pasien_df))
+
+        # Merge data based on Diagnosis to get matching prescriptions
+        merged_df = pd.merge(pasien_df, obat_df, on='Diagnosis', how='inner')
+        print("Merged DataFrame:", merged_df.head())  # Debugging output
+
+        # Add Age Category column
+        merged_df['Kategori Umur'] = merged_df['Umur'].apply(kategori_umur)
+
+        # Check if merged data is empty
+        if merged_df.empty:
+            print("No matching data found after merging.")
+            return jsonify({'error': 'No matching data found in merged DataFrame.'}), 500
+
+        # Group data by Gender and Age Category, concatenating the prescription lists
+        grouped_df = merged_df.groupby(['Gender', 'Kategori Umur'])['Resep Obat'].apply(', '.join).reset_index()
+        print("Grouped DataFrame:", grouped_df.head())  # Debugging output
+
+        # Convert to JSON format
+        grouped_data = grouped_df.to_dict(orient='records')
+        print("JSON Output:", grouped_data)  # Debugging output
+        return jsonify(grouped_data), 200
+
+    except Exception as e:
+        print(f"Error in pengelompokan_resep_obat: {e}")
+        return jsonify({'error': f"Internal Server Error: {str(e)}"}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 # Jalankan server Flask dengan SocketIO

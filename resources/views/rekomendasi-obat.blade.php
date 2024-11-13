@@ -11,6 +11,10 @@
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
+    <!-- SweetAlert2 CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Pasien</title>
@@ -66,6 +70,7 @@
 
 <body>
     <div class="container mt-5">
+
         <div class="card">
             <div class="card-body" style="background-color: #DCE8E6; font-family: 'Poppins', sans-serif;">
                 <div class="d-flex justify-content-between align-items-center">
@@ -77,17 +82,31 @@
                     <a href="{{ url('/input-pasien') }}" class="btn btn-primary"
                         style="background-color: #28AE96;">Input Data Pasien</a>
 
+                    <a href="{{ url('/hasil-pengelompokan') }}" class="btn btn-primary"
+                        style="background-color: #28AE96;">Hasil Pengelompokkan</a>
+
                 </div>
 
-                <!-- Alert Notifikasi Sukses -->
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                @endif
+                <script>
+                    // Menampilkan pesan sukses jika ada
+                    @if (session('success'))
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sukses',
+                            text: '{{ session('success') }}',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    @elseif (session('error'))
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: '{{ session('error') }}',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    @endif
+                </script>
 
                 {{-- Data Pasien --}}
                 <div class="table-responsive mt-2">
@@ -222,25 +241,23 @@
                 </div>
 
             </div>
+            {{-- </div> --}}
 
+            {{-- JS Script --}}
+            <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        </div>
-
-        {{-- JS Script --}}
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <script nonce="random-nonce-value">
-            $(document).ready(function() {
-                // Menghubungkan ke server SocketIO
-                var socket = io.connect('http://127.0.0.1:5000'); // Ganti dengan URL server Flask Anda
-
+            <script nonce="random-nonce-value">
                 $(document).ready(function() {
-                    var socket = io.connect('http://127.0.0.1:5000'); // Sesuaikan URL server Flask Anda
+                    // Menghubungkan ke server SocketIO
+                    var socket = io.connect('http://127.0.0.1:5000'); // Ganti dengan URL server Flask Anda
 
-                    // Mendengarkan event 'new_pasien' dari server Flask
-                    socket.on('new_pasien', function(data) {
-                        // Tambahkan data pasien baru ke tabel secara otomatis
-                        var newRow = `
+                    $(document).ready(function() {
+                        var socket = io.connect('http://127.0.0.1:5000'); // Sesuaikan URL server Flask Anda
+
+                        // Mendengarkan event 'new_pasien' dari server Flask
+                        socket.on('new_pasien', function(data) {
+                            // Tambahkan data pasien baru ke tabel secara otomatis
+                            var newRow = `
             <tr>
                 <td>${data.Nama}</td>
                 <td>${data.Gender}</td>
@@ -252,226 +269,226 @@
                 </td>
             </tr>
         `;
-                        $('#patient-table tbody').append(newRow);
-                    });
-                });
-
-
-                // Mendengarkan event 'patient_deleted' dari backend
-                socket.on('patient_deleted', function(data) {
-                    alert("Pasien dengan nama " + data.nama + " telah dihapus.");
-                    // Hapus baris pasien dari tabel berdasarkan nama pasien
-                    $("tr:contains('" + data.nama + "')").remove();
-                });
-
-                // Mendengarkan event 'diagnosis_deleted' untuk memperbarui autocomplete
-                socket.on('diagnosis_deleted', function(data) {
-                    alert("Diagnosis '" + data.diagnosis + "' telah dihapus.");
-
-                    // Memperbarui autocomplete dengan data diagnosis yang baru
-                    updateAutocompleteSource();
-                });
-
-                // Fungsi untuk memperbarui sumber data autocomplete
-                function updateAutocompleteSource() {
-                    $.ajax({
-                        url: "/api/diagnosis", // URL API untuk mendapatkan diagnosis terbaru
-                        method: "GET",
-                        success: function(data) {
-                            if (!data.error) {
-                                // Perbarui autocomplete dengan diagnosis yang terbaru
-                                $(".diagnosa-autocomplete").autocomplete("option", "source", data);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("Error updating autocomplete source:", error);
-                        }
-                    });
-                }
-
-                // Inisialisasi autocomplete untuk diagnosa
-                $('.modal').on('shown.bs.modal', function(e) {
-                    var modalId = $(this).attr('id');
-                    var index = modalId.split('-')[1]; // Mendapatkan index dari modal
-
-                    // Autocomplete untuk diagnosa
-                    $("#diagnosa-" + index).autocomplete({
-                        source: function(request, response) {
-                            $.ajax({
-                                url: "/api/diagnosis", // URL API untuk diagnosis
-                                dataType: "json",
-                                data: {
-                                    q: request.term
-                                },
-                                success: function(data) {
-                                    if (data.error || data.length === 0) {
-                                        $("#diagnosa-error-" + index).text(
-                                            "Diagnosis tidak ditemukan dalam dataset"
-                                        ).show();
-                                        response([]);
-                                    } else {
-                                        $("#diagnosa-error-" + index).hide();
-                                        response(data);
-                                    }
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error("Error fetching diagnosis:", error);
-                                    $("#diagnosa-error-" + index).text(
-                                            "Terjadi kesalahan dalam memuat diagnosis")
-                                        .show();
-                                }
-                            });
-                        },
-                        minLength: 1,
-                        select: function(event, ui) {
-                            var diagnosis = ui.item.value;
-                            fetchResepObat(diagnosis, index);
-                            fetchContentFiltering(diagnosis,
-                                index
-                            ); // Panggil fungsi untuk menampilkan hasil content-based filtering
-                        }
+                            $('#patient-table tbody').append(newRow);
+                        });
                     });
 
-                    // Fungsi untuk mendapatkan rekomendasi obat
-                    function fetchResepObat(diagnosis, index) {
+
+                    // Mendengarkan event 'patient_deleted' dari backend
+                    socket.on('patient_deleted', function(data) {
+                        alert("Pasien dengan nama " + data.nama + " telah dihapus.");
+                        // Hapus baris pasien dari tabel berdasarkan nama pasien
+                        $("tr:contains('" + data.nama + "')").remove();
+                    });
+
+                    // Mendengarkan event 'diagnosis_deleted' untuk memperbarui autocomplete
+                    socket.on('diagnosis_deleted', function(data) {
+                        alert("Diagnosis '" + data.diagnosis + "' telah dihapus.");
+
+                        // Memperbarui autocomplete dengan data diagnosis yang baru
+                        updateAutocompleteSource();
+                    });
+
+                    // Fungsi untuk memperbarui sumber data autocomplete
+                    function updateAutocompleteSource() {
                         $.ajax({
-                            url: "/api/rekomendasi-obat",
-                            method: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify({
-                                diagnosis: diagnosis
-                            }),
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function(response) {
-                                if (response.error) {
-                                    alert(response.error);
-                                } else if (response["Resep Obat"]) {
-                                    $("#resep-container-" + index).empty();
-                                    response["Resep Obat"].forEach(function(obat, idx) {
-                                        // Hapus batasan idx < 7 agar semua resep ditampilkan
-                                        var btnHtml =
-                                            `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
-                                        $("#resep-container-" + index).append(btnHtml);
-                                    });
-
-                                    // Memasukkan semua resep obat yang diterima pada hidden input
-                                    $("#form-edit-" + index).find("input[name='resep_obat']")
-                                        .remove();
-                                    $('<input>').attr({
-                                        type: 'hidden',
-                                        name: 'resep_obat',
-                                        value: response["Resep Obat"].join(', ')
-                                    }).appendTo("#form-edit-" + index);
-
-                                    bindResepButtonHandler(index);
-                                } else {
-                                    $("#resep-container-" + index).empty().append(
-                                        "<p>Diagnosis tidak ada dalam dataset.</p>");
+                            url: "/api/diagnosis", // URL API untuk mendapatkan diagnosis terbaru
+                            method: "GET",
+                            success: function(data) {
+                                if (!data.error) {
+                                    // Perbarui autocomplete dengan diagnosis yang terbaru
+                                    $(".diagnosa-autocomplete").autocomplete("option", "source", data);
                                 }
                             },
                             error: function(xhr, status, error) {
-                                console.log("Error fetching recommendation:", error);
+                                console.error("Error updating autocomplete source:", error);
                             }
                         });
                     }
 
+                    // Inisialisasi autocomplete untuk diagnosa
+                    $('.modal').on('shown.bs.modal', function(e) {
+                        var modalId = $(this).attr('id');
+                        var index = modalId.split('-')[1]; // Mendapatkan index dari modal
 
-                    // Ambil CSRF token dari meta tag
-                    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-                    // Pastikan setiap request POST menyertakan CSRF token
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        }
-                    });
-
-                    // Fungsi untuk mendapatkan hasil perhitungan content-based filtering
-                    function fetchContentFiltering(diagnosis, index) {
-                        console.log("Sending diagnosis:", diagnosis); // Log diagnosis yang dikirim
-
-                        $.ajax({
-                            url: "/api/cbf", // URL menuju route Laravel
-                            method: "POST", // Pastikan method di sini adalah POST
-                            contentType: "application/json",
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken // Sertakan CSRF token di header
+                        // Autocomplete untuk diagnosa
+                        $("#diagnosa-" + index).autocomplete({
+                            source: function(request, response) {
+                                $.ajax({
+                                    url: "/api/diagnosis", // URL API untuk diagnosis
+                                    dataType: "json",
+                                    data: {
+                                        q: request.term
+                                    },
+                                    success: function(data) {
+                                        if (data.error || data.length === 0) {
+                                            $("#diagnosa-error-" + index).text(
+                                                "Diagnosis tidak ditemukan dalam dataset"
+                                            ).show();
+                                            response([]);
+                                        } else {
+                                            $("#diagnosa-error-" + index).hide();
+                                            response(data);
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error("Error fetching diagnosis:", error);
+                                        $("#diagnosa-error-" + index).text(
+                                                "Terjadi kesalahan dalam memuat diagnosis")
+                                            .show();
+                                    }
+                                });
                             },
-                            data: JSON.stringify({
-                                diagnosis: diagnosis // Diagnosis yang dikirim
-                            }),
-                            success: function(response) {
-                                console.log("Received response:",
-                                    response); // Log response dari backend
-                                if (response.error) {
-                                    $("#content-filtering-" + index).html(
-                                        `<p class="text-danger">${response.error}</p>`
-                                    );
-                                } else {
-                                    let hasil = `
+                            minLength: 1,
+                            select: function(event, ui) {
+                                var diagnosis = ui.item.value;
+                                fetchResepObat(diagnosis, index);
+                                fetchContentFiltering(diagnosis,
+                                    index
+                                ); // Panggil fungsi untuk menampilkan hasil content-based filtering
+                            }
+                        });
+
+                        // Fungsi untuk mendapatkan rekomendasi obat
+                        function fetchResepObat(diagnosis, index) {
+                            $.ajax({
+                                url: "/api/rekomendasi-obat",
+                                method: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify({
+                                    diagnosis: diagnosis
+                                }),
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function(response) {
+                                    if (response.error) {
+                                        alert(response.error);
+                                    } else if (response["Resep Obat"]) {
+                                        $("#resep-container-" + index).empty();
+                                        response["Resep Obat"].forEach(function(obat, idx) {
+                                            // Hapus batasan idx < 7 agar semua resep ditampilkan
+                                            var btnHtml =
+                                                `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
+                                            $("#resep-container-" + index).append(btnHtml);
+                                        });
+
+                                        // Memasukkan semua resep obat yang diterima pada hidden input
+                                        $("#form-edit-" + index).find("input[name='resep_obat']")
+                                            .remove();
+                                        $('<input>').attr({
+                                            type: 'hidden',
+                                            name: 'resep_obat',
+                                            value: response["Resep Obat"].join(', ')
+                                        }).appendTo("#form-edit-" + index);
+
+                                        bindResepButtonHandler(index);
+                                    } else {
+                                        $("#resep-container-" + index).empty().append(
+                                            "<p>Diagnosis tidak ada dalam dataset.</p>");
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.log("Error fetching recommendation:", error);
+                                }
+                            });
+                        }
+
+                        // Ambil CSRF token dari meta tag
+                        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                        // Pastikan setiap request POST menyertakan CSRF token
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            }
+                        });
+
+                        // Fungsi untuk mendapatkan hasil perhitungan content-based filtering
+                        function fetchContentFiltering(diagnosis, index) {
+                            console.log("Sending diagnosis:", diagnosis); // Log diagnosis yang dikirim
+
+                            $.ajax({
+                                url: "/api/cbf", // URL menuju route Laravel
+                                method: "POST", // Pastikan method di sini adalah POST
+                                contentType: "application/json",
+                                headers: {
+                                    'X-CSRF-TOKEN': csrfToken // Sertakan CSRF token di header
+                                },
+                                data: JSON.stringify({
+                                    diagnosis: diagnosis // Diagnosis yang dikirim
+                                }),
+                                success: function(response) {
+                                    console.log("Received response:",
+                                        response); // Log response dari backend
+                                    if (response.error) {
+                                        $("#content-filtering-" + index).html(
+                                            `<p class="text-danger">${response.error}</p>`
+                                        );
+                                    } else {
+                                        let hasil = `
                     <p><strong>Diagnosis Input:</strong> ${response.diagnosis}</p>
                     <p><strong>Cosine Similarity:</strong> ${response.cosine_similarity}</p>
                     <p><strong>Top Matches:</strong> ${response.top_matches.join(', ')}</p>
 
                 `;
-                                    $("#content-filtering-" + index).html(hasil);
+                                        $("#content-filtering-" + index).html(hasil);
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.log("Error response:", xhr
+                                        .responseText); // Log jika terjadi error
+                                    $("#content-filtering-" + index).html(
+                                        "<p class='text-danger'>Error fetching content-based filtering results.</p>"
+                                    );
                                 }
-                            },
-                            error: function(xhr, status, error) {
-                                console.log("Error response:", xhr
-                                    .responseText); // Log jika terjadi error
-                                $("#content-filtering-" + index).html(
-                                    "<p class='text-danger'>Error fetching content-based filtering results.</p>"
-                                );
-                            }
+                            });
+                        }
+
+
+                        // Bind event handler untuk menghapus tombol resep obat jika diklik
+                        function bindResepButtonHandler(index) {
+                            $("#resep-container-" + index).off("click", ".resep-button").on("click",
+                                ".resep-button",
+                                function() {
+                                    var button = $(this);
+
+                                    // Konfirmasi penghapusan
+                                    var confirmDelete = confirm(
+                                        "Apakah Anda yakin ingin menghapus resep obat ini?");
+
+                                    if (confirmDelete) {
+                                        // Tambahkan kelas `removed` untuk resep yang dihapus
+                                        button.addClass("removed").prop("disabled", true).css("opacity", "0.5");
+                                    }
+                                });
+                        }
+
+                        // Ketika form disubmit
+                        $(".modal form").off('submit').on('submit', function() {
+                            var selectedObat = [];
+                            $("#resep-container-" + index + " .resep-button:not(.removed)").each(
+                                function() {
+                                    var text = $(this).text().trim();
+                                    if (text) {
+                                        selectedObat.push(text);
+                                    }
+                                });
+                            // Menghapus dan menambahkan hidden input untuk resep obat yang dipilih
+                            $(this).find("input[name='resep_obat']").remove();
+                            $('<input>').attr({
+                                type: 'hidden',
+                                name: 'resep_obat',
+                                value: selectedObat.join(', ')
+                            }).appendTo(this);
                         });
-                    }
-
-
-                    // Bind event handler untuk menghapus tombol resep obat jika diklik
-                    function bindResepButtonHandler(index) {
-                        $("#resep-container-" + index).off("click", ".resep-button").on("click",
-                            ".resep-button",
-                            function() {
-                                var button = $(this);
-
-                                // Konfirmasi penghapusan
-                                var confirmDelete = confirm(
-                                    "Apakah Anda yakin ingin menghapus resep obat ini?");
-
-                                if (confirmDelete) {
-                                    // Tambahkan kelas `removed` untuk resep yang dihapus
-                                    button.addClass("removed").prop("disabled", true).css("opacity", "0.5");
-                                }
-                            });
-                    }
-
-
-
-                    // Ketika form disubmit
-                    $(".modal form").off('submit').on('submit', function() {
-                        var selectedObat = [];
-                        $("#resep-container-" + index + " .resep-button:not(.removed)").each(
-                            function() {
-                                var text = $(this).text().trim();
-                                if (text) {
-                                    selectedObat.push(text);
-                                }
-                            });
-                        // Menghapus dan menambahkan hidden input untuk resep obat yang dipilih
-                        $(this).find("input[name='resep_obat']").remove();
-                        $('<input>').attr({
-                            type: 'hidden',
-                            name: 'resep_obat',
-                            value: selectedObat.join(', ')
-                        }).appendTo(this);
                     });
                 });
-            });
-        </script>
-    </div>
+            </script>
+
+        </div>
+        <!-- Bootstrap JS (untuk dismissible alert) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

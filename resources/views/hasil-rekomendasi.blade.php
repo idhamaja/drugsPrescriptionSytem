@@ -115,7 +115,7 @@
                 <!-- Tombol kembali ke halaman utama -->
                 <div class="text-center">
                     <a href="{{ url('/rekomendasi-obat') }}" class="btn btn-primary mt-4"
-                        style="background-color: #28AE96;">Kembali ke Halaman Utama</a>
+                        style="background-color: #28AE96;">Kembali ke Beranda</a>
                 </div>
             </div>
         </div>
