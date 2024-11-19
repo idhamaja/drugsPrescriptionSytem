@@ -49,6 +49,7 @@ class PasienController extends Controller
     // Fungsi untuk menyimpan data pasien
     public function simpanData(Request $request)
     {
+        // Validasi input
         $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'gender' => 'required|string',
@@ -58,25 +59,33 @@ class PasienController extends Controller
         ]);
 
         try {
-            // Pisahkan resep obat yang masih aktif
-            $resep_obat = array_filter(explode(', ', $validatedData['resep_obat']), function ($obat) {
-                return !empty($obat); // Hanya simpan resep yang tidak kosong
-            });
+            // Olah resep obat dari input (jika ada)
+            $resep_obat = array_filter(
+                explode(', ', $validatedData['resep_obat']),
+                fn($obat) => !empty(trim($obat)) // Hapus string kosong atau whitespace
+            );
 
-            // Simpan data pasien ke database
-            $pasien = new Pasien();
-            $pasien->nama = $validatedData['nama'];
-            $pasien->gender = $validatedData['gender'];
-            $pasien->umur = $validatedData['umur'];
-            $pasien->diagnosa = $validatedData['diagnosa'];
-            $pasien->resep_obat = implode(', ', $resep_obat); // Gabungkan resep aktif menjadi string
-            $pasien->save();
+            // Simpan atau perbarui data pasien
+            $pasien = Pasien::updateOrCreate(
+                ['nama' => $validatedData['nama']], // Cari pasien berdasarkan nama
+                [
+                    'gender' => $validatedData['gender'],
+                    'umur' => $validatedData['umur'],
+                    'diagnosa' => $validatedData['diagnosa'],
+                    'resep_obat' => implode(', ', $resep_obat), // Gabungkan resep jadi string
+                ]
+            );
 
             return redirect()->back()->with('success', 'Diagnosa dan Resep Obat Berhasil Disimpan.');
         } catch (\Exception $e) {
+            // Log error untuk debugging
+            Log::error('Kesalahan saat menyimpan data pasien: ' . $e->getMessage());
+
+            // Redirect dengan pesan error
             return redirect()->back()->with('error', 'Data Belum Tersimpan. Terjadi kesalahan.');
         }
     }
+
 
     // Metode baru untuk menampilkan hasil rekomendasi obat
     public function hasilRekomendasi($pasien_id)
@@ -87,6 +96,4 @@ class PasienController extends Controller
         // Kirim data pasien ke view
         return view('hasil-rekomendasi', ['data_pasien' => $data_pasien]);
     }
-
-
 }

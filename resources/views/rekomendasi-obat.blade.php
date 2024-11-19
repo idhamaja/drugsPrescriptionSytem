@@ -11,10 +11,6 @@
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
-    <!-- SweetAlert2 CSS & JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Pasien</title>
@@ -24,6 +20,9 @@
 
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Font Awesome untuk ikon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <!-- Tambahkan Socket.IO -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
@@ -65,6 +64,11 @@
             pointer-events: none;
             opacity: 0.5;
         }
+
+        .resep-button .fa-trash {
+            margin-left: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -86,28 +90,22 @@
                         style="background-color: #28AE96;">Hasil Pengelompokkan</a>
 
                 </div>
-
-                <script>
-                    // Menampilkan pesan sukses jika ada
+                <!-- Alert Container -->
+                <div class="alert-container">
                     @if (session('success'))
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Sukses',
-                            text: '{{ session('success') }}',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                        </div>
                     @elseif (session('error'))
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: '{{ session('error') }}',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                        </div>
                     @endif
-                </script>
-
+                </div>
                 {{-- Data Pasien --}}
                 <div class="table-responsive mt-2">
                     <table class="table table-striped table-hover" id="patient-table">
@@ -367,9 +365,10 @@
                                     } else if (response["Resep Obat"]) {
                                         $("#resep-container-" + index).empty();
                                         response["Resep Obat"].forEach(function(obat, idx) {
-                                            // Hapus batasan idx < 7 agar semua resep ditampilkan
-                                            var btnHtml =
-                                                `<button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">${obat}</button>`;
+                                            var btnHtml = `
+            <button type="button" class="btn btn-info btn-sm resep-button" id="resep-${index}-${idx}">
+                ${obat} <i class="fas fa-trash text-danger ml-2"></i>
+            </button>`;
                                             $("#resep-container-" + index).append(btnHtml);
                                         });
 
@@ -450,19 +449,25 @@
                         function bindResepButtonHandler(index) {
                             $("#resep-container-" + index).off("click", ".resep-button").on("click",
                                 ".resep-button",
-                                function() {
+                                function(e) {
                                     var button = $(this);
+
+                                    // Jika ikon trash (di dalam tombol) diklik
+                                    if ($(e.target).hasClass('fa-trash')) {
+                                        button.remove(); // Hapus tombol sepenuhnya
+                                        return;
+                                    }
 
                                     // Konfirmasi penghapusan
                                     var confirmDelete = confirm(
                                         "Apakah Anda yakin ingin menghapus resep obat ini?");
-
                                     if (confirmDelete) {
                                         // Tambahkan kelas `removed` untuk resep yang dihapus
                                         button.addClass("removed").prop("disabled", true).css("opacity", "0.5");
                                     }
                                 });
                         }
+
 
                         // Ketika form disubmit
                         $(".modal form").off('submit').on('submit', function() {

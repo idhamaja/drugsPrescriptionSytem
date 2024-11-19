@@ -22,3 +22,5 @@ Route::get('/hasil-rekomendasi/{pasien_id}', [PasienController::class, 'hasilRek
 Route::get('/hasil-pengelompokan', [PengelompokanController::class, 'index']);
 
 Route::post('/api/cbf', [RekomendasiController::class, 'contentBasedFiltering']);
+
+
