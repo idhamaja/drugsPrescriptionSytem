@@ -33,10 +33,8 @@ class InputPasienController extends Controller
                 'Umur' => $validatedData['umur'],
             ]);
 
-            if ($response->status() == 409) {
-                return redirect('/rekomendasi-obat')->with('error', 'Data pasien sudah ada.');
-            } elseif (!$response->successful()) {
-                return redirect('/rekomendasi-obat')->with('error', 'Gagal menyimpan data pasien.');
+            if ($response->status() == 409 || !$response->successful()) {
+                return redirect('/rekomendasi-obat');
             }
 
             // Simpan data ke CSV lokal jika berhasil
@@ -52,8 +50,8 @@ class InputPasienController extends Controller
             ]);
             fclose($file);
 
-            // Menampilkan pesan sukses dan mengarahkan ke halaman rekomendasi-obat
-            return redirect('/rekomendasi-obat')->with('success', 'Data Pasien Berhasil Ditambahkan');
+            // Redirect dengan pesan sukses
+            return redirect('/rekomendasi-obat')->with('success', 'Data pasien berhasil ditambahkan.');
         } catch (\Exception $e) {
             Log::error("Error sending data to Flask: " . $e->getMessage());
             return redirect('/rekomendasi-obat')->with('error', 'Terjadi kesalahan saat menyimpan data pasien.');

@@ -69,6 +69,11 @@
             margin-left: 5px;
             cursor: pointer;
         }
+
+        .alert {
+    margin-top: 20px;
+    font-size: 1rem;
+}
     </style>
 </head>
 
@@ -93,18 +98,20 @@
                 <!-- Alert Container -->
                 <div class="alert-container">
                     @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                    @elseif (session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                    @endif
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Sukses!</strong> {{ session('success') }}
+
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>Kesalahan!</strong> {{ session('error') }}
+
+                    </div>
+                @endif
                 </div>
                 {{-- Data Pasien --}}
                 <div class="table-responsive mt-2">
