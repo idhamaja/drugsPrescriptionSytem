@@ -312,15 +312,18 @@ def test_disconnect():
     print("Client disconnected")
 
 # Function to categorize age
+# Function to categorize age
 def kategori_umur(umur):
     if umur < 18:
-        return "Anak-anak"
+        return "Anak-anak / 0-17"
     elif 18 <= umur < 30:
-        return "Dewasa Muda"
+        return "Dewasa Muda / 18-29"
     elif 30 <= umur < 60:
-        return "Dewasa"
+        return "Dewasa / 30-59"
     else:
-        return "Lansia"
+        return "Lansia / 60+"
+
+
 
 # Route to get grouped medication data
 @app.route('/api/pengelompokan_resep_obat', methods=['GET'])

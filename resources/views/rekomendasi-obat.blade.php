@@ -27,7 +27,7 @@
     <!-- Tambahkan Socket.IO -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
             background-size: cover;
@@ -71,9 +71,9 @@
         }
 
         .alert {
-    margin-top: 20px;
-    font-size: 1rem;
-}
+            margin-top: 20px;
+            font-size: 1rem;
+        }
     </style>
 </head>
 
@@ -81,37 +81,50 @@
     <div class="container mt-5">
 
         <div class="card">
-            <div class="card-body" style="background-color: #DCE8E6; font-family: 'Poppins', sans-serif;">
-                <div class="d-flex justify-content-between align-items-center">
-                    <a href="http://127.0.0.1:8000/hasil-rekomendasi/3" class="btn btn-primary"
-                        style="background-color: #28AE96;">Hasil Rekomendasi</a>
 
-                    <h2 class="text-center mb-4">Data Pasien</h2>
+            <div class="card-body" style="background-color: #DCE8E6; font-family: 'Poppins', sans-serif;">
+                <h2 class="text-center mb-4">Data Pasien</h2>
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <a href="{{ url('/dashboard') }}" class="btn btn-primary"
+                        style="background-color: #28AE96;">Dashboard</a>
 
                     <a href="{{ url('/input-pasien') }}" class="btn btn-primary"
                         style="background-color: #28AE96;">Input Data Pasien</a>
 
+                    <a href="http://127.0.0.1:8000/hasil-rekomendasi/3" class="btn btn-primary"
+                        style="background-color: #28AE96;">Hasil Rekomendasi</a>
+
                     <a href="{{ url('/hasil-pengelompokan') }}" class="btn btn-primary"
                         style="background-color: #28AE96;">Hasil Pengelompokkan</a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-primary" style="background-color: #28AE96; border: none;">
+                            Logout
+                        </button>
+                    </form>
+
+
 
                 </div>
                 <!-- Alert Container -->
                 <div class="alert-container">
                     @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
-                        <strong>Sukses!</strong> {{ session('success') }}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Sukses!</strong> {{ session('success') }}
 
-                    </div>
-                @endif
+                        </div>
+                    @endif
 
-                @if (session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-times-circle me-2"></i>
-                        <strong>Kesalahan!</strong> {{ session('error') }}
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-times-circle me-2"></i>
+                            <strong>Kesalahan!</strong> {{ session('error') }}
 
-                    </div>
-                @endif
+                        </div>
+                    @endif
                 </div>
                 {{-- Data Pasien --}}
                 <div class="table-responsive mt-2">
@@ -187,8 +200,8 @@
                                                                     <input type="text"
                                                                         class="form-control diagnosa-autocomplete"
                                                                         id="diagnosa-{{ $loop->index }}"
-                                                                        name="diagnosa" placeholder="Ketik diagnosis..."
-                                                                        required>
+                                                                        name="diagnosa"
+                                                                        placeholder="Ketik diagnosis..." required>
                                                                     <!-- Tempat untuk pesan error -->
                                                                     <div id="diagnosa-error-{{ $loop->index }}"
                                                                         class="text-danger"
@@ -465,13 +478,7 @@
                                         return;
                                     }
 
-                                    // Konfirmasi penghapusan
-                                    var confirmDelete = confirm(
-                                        "Apakah Anda yakin ingin menghapus resep obat ini?");
-                                    if (confirmDelete) {
-                                        // Tambahkan kelas `removed` untuk resep yang dihapus
-                                        button.addClass("removed").prop("disabled", true).css("opacity", "0.5");
-                                    }
+
                                 });
                         }
 

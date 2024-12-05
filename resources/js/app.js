@@ -1,66 +1,27 @@
+import '../css/app.css';
 import './bootstrap';
 
-$(document).ready(function() {
-    // Hubungkan ke server SocketIO
-    var socket = io.connect('http://127.0.0.1:5000'); // URL ke server Flask
+import { createInertiaApp } from '@inertiajs/vue3';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createApp, h } from 'vue';
+import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
-    // Mendengarkan event 'new_pasien' dari server
-    socket.on('new_pasien', function(data) {
-        // Tambahkan pasien baru ke tabel tanpa reload
-        var newRow = `
-            <tr>
-                <td>${data.Nama}</td>
-                <td>${data.Gender}</td>
-                <td>${data.Umur}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Diagnosa</button>
-                </td>
-            </tr>
-        `;
-        $('#patient-table tbody').append(newRow); // Append row baru ke tabel
-    });
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-    // Mendengarkan event 'patient_deleted' dari server
-    socket.on('patient_deleted', function(data) {
-        alert("Pasien dengan nama " + data.nama + " telah dihapus.");
-        $("tr:contains('" + data.nama + "')").remove(); // Hapus baris pasien dari tabel
-    });
+createInertiaApp({
+    title: (title) => `${title} - ${appName}`,
+    resolve: (name) =>
+        resolvePageComponent(
+            `./Pages/${name}.vue`,
+            import.meta.glob('./Pages/**/*.vue'),
+        ),
+    setup({ el, App, props, plugin }) {
+        return createApp({ render: () => h(App, props) })
+            .use(plugin)
+            .use(ZiggyVue)
+            .mount(el);
+    },
+    progress: {
+        color: '#4B5563',
+    },
 });
-
-
-import Echo from 'laravel-echo';
-import io from 'socket.io-client';
-
-window.io = io;
-
-window.Echo = new Echo({
-    broadcaster: 'socket.io',
-    host: window.location.hostname + ':6001' // Ubah sesuai dengan konfigurasi host server
-});
-
-
-window.Echo.channel('pasien')
-    .listen('PasienAdded', (data) => {
-        // Tambahkan pasien baru ke tabel
-        let newRow = `
-            <tr>
-                <td>${data.nama}</td>
-                <td>${data.gender}</td>
-                <td>${data.umur}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Diagnosa</button>
-                </td>
-            </tr>
-        `;
-        $('#patient-table tbody').append(newRow);
-
-        // Tampilkan notifikasi
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: 'Data Pasien berhasil disimpan!',
-            showConfirmButton: false,
-            timer: 2000
-        });
-    });
-
