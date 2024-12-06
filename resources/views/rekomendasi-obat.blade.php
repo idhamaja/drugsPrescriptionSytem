@@ -74,6 +74,11 @@
             margin-top: 20px;
             font-size: 1rem;
         }
+
+        .btn-group a {
+            margin-right: 10px;
+            /* Memberikan jarak antar tombol */
+        }
     </style>
 </head>
 
@@ -84,30 +89,34 @@
 
             <div class="card-body" style="background-color: #DCE8E6; font-family: 'Poppins', sans-serif;">
                 <h2 class="text-center mb-4">Data Pasien</h2>
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <!-- Tombol navigasi dalam grup -->
+                    <div class="btn-group" role="group" style="gap: 10px;"> <!-- Menambahkan jarak antar tombol -->
+                        <a href="{{ url('/dashboard') }}" class="btn btn-primary"
+                            style="background-color: #28AE96;">Dashboard</a>
+                        <a href="{{ url('/input-pasien') }}" class="btn btn-primary"
+                            style="background-color: #28AE96;">Input Data Pasien</a>
+                        <a href="http://127.0.0.1:8000/hasil-rekomendasi/3" class="btn btn-primary"
+                            style="background-color: #28AE96;">Hasil Rekomendasi</a>
+                        <a href="{{ url('/hasil-pengelompokan') }}" class="btn btn-primary"
+                            style="background-color: #28AE96;">Hasil Pengelompokkan</a>
+                    </div>
 
-                    <a href="{{ url('/dashboard') }}" class="btn btn-primary"
-                        style="background-color: #28AE96;">Dashboard</a>
 
-                    <a href="{{ url('/input-pasien') }}" class="btn btn-primary"
-                        style="background-color: #28AE96;">Input Data Pasien</a>
-
-                    <a href="http://127.0.0.1:8000/hasil-rekomendasi/3" class="btn btn-primary"
-                        style="background-color: #28AE96;">Hasil Rekomendasi</a>
-
-                    <a href="{{ url('/hasil-pengelompokan') }}" class="btn btn-primary"
-                        style="background-color: #28AE96;">Hasil Pengelompokkan</a>
-
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    <!-- Tombol Logout -->
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="ml-auto">
                         @csrf
-                        <button type="submit" class="btn btn-primary" style="background-color: #28AE96; border: none;">
-                            Logout
-                        </button>
+                        <button type="submit" class="btn btn-primary"
+                            style="background-color: #28AE96; border: none;">Logout</button>
                     </form>
 
-
-
+                    <!-- Input Pencarian -->
+                    <div class="ml-2">
+                        <input type="text" id="search-bar" class="form-control" style="width: 200px;"
+                            placeholder="Cari nama pasien...">
+                    </div>
                 </div>
+
                 <!-- Alert Container -->
                 <div class="alert-container">
                     @if (session('success'))
@@ -214,10 +223,15 @@
                                                                     <h5>Hasil Perhitungan:</h5>
                                                                     <div id="content-filtering-{{ $loop->index }}"
                                                                         style="padding: 10px; background-color: #f7f7f7; border: 1px solid #ddd;">
-                                                                        <!-- Perhitungan akan ditampilkan di sini -->
-
+                                                                        <!-- Hasil perhitungan akan ditampilkan di sini -->
+                                                                    </div>
+                                                                    <div id="detail-perhitungan-{{ $loop->index }}"
+                                                                        style="padding: 10px; margin-top: 10px; background-color: #eef6f6; border: 1px solid #ddd;">
+                                                                        <!-- Detail perhitungan TF-IDF dan Cosine Similarity akan ditampilkan di sini -->
                                                                     </div>
                                                                 </div>
+
+
 
 
                                                                 <!-- Rekomendasi Resep Obat -->
@@ -263,6 +277,20 @@
 
             {{-- JS Script --}}
             <meta name="csrf-token" content="{{ csrf_token() }}">
+
+            <script>
+                $(document).ready(function() {
+                    // Fitur pencarian
+                    $("#search-bar").on("keyup", function() {
+                        var value = $(this).val().toLowerCase(); // Ambil input pencarian
+                        $("#patient-table tbody tr").filter(function() {
+                            // Tampilkan atau sembunyikan baris berdasarkan pencarian
+                            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                        });
+                    });
+                });
+            </script>
+
 
             <script nonce="random-nonce-value">
                 $(document).ready(function() {
@@ -425,40 +453,44 @@
 
                         // Fungsi untuk mendapatkan hasil perhitungan content-based filtering
                         function fetchContentFiltering(diagnosis, index) {
-                            console.log("Sending diagnosis:", diagnosis); // Log diagnosis yang dikirim
-
                             $.ajax({
-                                url: "/api/cbf", // URL menuju route Laravel
-                                method: "POST", // Pastikan method di sini adalah POST
+                                url: "/api/cbf", // Endpoint untuk perhitungan CBF
+                                method: "POST",
                                 contentType: "application/json",
                                 headers: {
-                                    'X-CSRF-TOKEN': csrfToken // Sertakan CSRF token di header
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                        'content') // Sertakan CSRF token
                                 },
                                 data: JSON.stringify({
-                                    diagnosis: diagnosis // Diagnosis yang dikirim
-                                }),
+                                    diagnosis: diagnosis
+                                }), // Kirim diagnosis sebagai JSON
                                 success: function(response) {
-                                    console.log("Received response:",
-                                        response); // Log response dari backend
                                     if (response.error) {
                                         $("#content-filtering-" + index).html(
-                                            `<p class="text-danger">${response.error}</p>`
-                                        );
+                                            `<p class="text-danger">${response.error}</p>`);
                                     } else {
+                                        // Hasil akhir metode
                                         let hasil = `
                     <p><strong>Diagnosis Input:</strong> ${response.diagnosis}</p>
-                    <p><strong>Cosine Similarity:</strong> ${response.cosine_similarity}</p>
                     <p><strong>Top Matches:</strong> ${response.top_matches.join(', ')}</p>
-
                 `;
                                         $("#content-filtering-" + index).html(hasil);
+
+                                        // Detail perhitungan TF-IDF dan Cosine Similarity
+                                        let detailPerhitungan = `
+                    <h6><strong>Detail Perhitungan:</strong></h6>
+                    <p><strong>TF-IDF Vector:</strong></p>
+                    <pre>${JSON.stringify(response.tf_idf_vector, null, 2)}</pre>
+                    <p><strong>Cosine Similarity Scores:</strong></p>
+                    <pre>${JSON.stringify(response.cosine_similarity_scores, null, 2)}</pre>
+                `;
+                                        $("#detail-perhitungan-" + index).html(detailPerhitungan);
                                     }
                                 },
                                 error: function(xhr, status, error) {
-                                    console.log("Error response:", xhr
-                                        .responseText); // Log jika terjadi error
+                                    console.error("Error fetching CBF results:", error);
                                     $("#content-filtering-" + index).html(
-                                        "<p class='text-danger'>Error fetching content-based filtering results.</p>"
+                                        `<p class="text-danger">Error fetching content-based filtering results.</p>`
                                     );
                                 }
                             });
