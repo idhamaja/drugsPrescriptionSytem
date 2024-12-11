@@ -79,6 +79,28 @@
             margin-right: 10px;
             /* Memberikan jarak antar tombol */
         }
+
+
+        pre {
+            background-color: #eef;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
     </style>
 </head>
 
@@ -217,6 +239,256 @@
                                                                         style="display:none; font-size: 0.9em;"></div>
                                                                 </div>
 
+                                                                <!-- Penjelasan metode -->
+                                                                <div class="mt-4">
+                                                                    <h5>Langkah-Langkah Metode Content-Based Filtering
+                                                                    </h5>
+
+                                                                    <h5>Rumus TF-IDF dan Cosine Similarity</h5>
+
+                                                                    <p>Berikut adalah representasi rumus TF-IDF:</p>
+                                                                    <math xmlns="http://www.w3.org/1998/Math/MathML"
+                                                                        display="block">
+                                                                        <mrow>
+                                                                            <mi>TF-IDF</mi>
+                                                                            <mo>(</mo>
+                                                                            <mi>t</mi>
+                                                                            <mo>,</mo>
+                                                                            <mi>d</mi>
+                                                                            <mo>)</mo>
+                                                                            <mo>=</mo>
+                                                                            <mi>TF</mi>
+                                                                            <mo>(</mo>
+                                                                            <mi>t</mi>
+                                                                            <mo>,</mo>
+                                                                            <mi>d</mi>
+                                                                            <mo>)</mo>
+                                                                            <mo>&#x00D7;</mo>
+                                                                            <mi>IDF</mi>
+                                                                            <mo>(</mo>
+                                                                            <mi>t</mi>
+                                                                            <mo>)</mo>
+                                                                        </mrow>
+                                                                    </math>
+
+                                                                    <h5>Detail Komponen</h5>
+                                                                    <p><strong>1. Term Frequency (TF):</strong></p>
+                                                                    <math xmlns="http://www.w3.org/1998/Math/MathML"
+                                                                        display="block">
+                                                                        <mrow>
+                                                                            <mi>TF</mi>
+                                                                            <mo>(</mo>
+                                                                            <mi>t</mi>
+                                                                            <mo>,</mo>
+                                                                            <mi>d</mi>
+                                                                            <mo>)</mo>
+                                                                            <mo>=</mo>
+                                                                            <mfrac>
+                                                                                <mrow>
+                                                                                    <mi>Frekuensi</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>kata</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>t</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>dalam</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>dokumen</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>d</mi>
+                                                                                </mrow>
+                                                                                <mrow>
+                                                                                    <mi>Total</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>kata</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>dalam</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>dokumen</mi>
+                                                                                    <mo>&nbsp;</mo>
+                                                                                    <mi>d</mi>
+                                                                                </mrow>
+                                                                            </mfrac>
+                                                                        </mrow>
+                                                                    </math>
+
+                                                                    <p><strong>2. Inverse Document Frequency
+                                                                            (IDF)
+                                                                            :</strong></p>
+                                                                    <math xmlns="http://www.w3.org/1998/Math/MathML"
+                                                                        display="block">
+                                                                        <mrow>
+                                                                            <mi>IDF</mi>
+                                                                            <mo>(</mo>
+                                                                            <mi>t</mi>
+                                                                            <mo>)</mo>
+                                                                            <mo>=</mo>
+                                                                            <mi>log</mi>
+                                                                            <mo>(</mo>
+                                                                            <mfrac>
+                                                                                <mrow>
+                                                                                    <mi>N</mi>
+                                                                                </mrow>
+                                                                                <mrow>
+                                                                                    <mn>1</mn>
+                                                                                    <mo>+</mo>
+                                                                                    <mi>DF</mi>
+                                                                                    <mo>(</mo>
+                                                                                    <mi>t</mi>
+                                                                                    <mo>)</mo>
+                                                                                </mrow>
+                                                                            </mfrac>
+                                                                            <mo>)</mo>
+                                                                        </mrow>
+                                                                    </math>
+
+                                                                    <h5>Keterangan:</h5>
+                                                                    <ul>
+                                                                        <li><strong>N:</strong> Jumlah total dokumen.
+                                                                        </li>
+                                                                        <li><strong>DF(t):</strong> Jumlah dokumen yang
+                                                                            mengandung istilah <em>t</em>.</li>
+                                                                    </ul>
+
+                                                                    <h5>Cosine Similarity Formula</h5>
+                                                                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                                                                        <mrow>
+                                                                            <mi>Cosine Similarity</mi>
+                                                                            <mo>(</mo>
+                                                                            <mi>A</mi>
+                                                                            <mo>,</mo>
+                                                                            <mi>B</mi>
+                                                                            <mo>)</mo>
+                                                                            <mo>=</mo>
+                                                                            <mfrac>
+                                                                                <mrow>
+                                                                                    <mi>A</mi>
+                                                                                    <mo>&#x22C5;</mo>
+                                                                                    <mi>B</mi>
+                                                                                </mrow>
+                                                                                <mrow>
+                                                                                    <mo>&#x2225;</mo>
+                                                                                    <mi>A</mi>
+                                                                                    <mo>&#x2225;</mo>
+                                                                                    <mo>&#x00D7;</mo>
+                                                                                    <mo>&#x2225;</mo>
+                                                                                    <mi>B</mi>
+                                                                                    <mo>&#x2225;</mo>
+                                                                                </mrow>
+                                                                            </mfrac>
+                                                                        </mrow>
+                                                                    </math>
+
+                                                                    <p><strong>Keterangan:</strong></p>
+                                                                    <ul>
+                                                                        <li><em>A</em> dan <em>B</em>: Vektor TF-IDF dua
+                                                                            dokumen.</li>
+                                                                        <li><em>A ⋅ B</em>: Hasil dot product antara
+                                                                            vektor <em>A</em> dan <em>B</em>.</li>
+                                                                        <li><em>||A||</em>: Panjang atau norma dari
+                                                                            vektor <em>A</em>.</li>
+                                                                    </ul>
+
+                                                                    <h5>Langkah-Langkah Implementasi</h5>
+                                                                    <ol>
+                                                                        <li><strong>Data Input:</strong> Pengguna
+                                                                            memasukkan teks diagnosis, misalnya "demam
+                                                                            tinggi".</li>
+                                                                        <li><strong>Preprocessing Data:</strong>
+                                                                            <ul>
+                                                                                <li>Ubah teks menjadi lowercase.</li>
+                                                                                <li>Hilangkan karakter kosong di
+                                                                                    awal/akhir teks.</li>
+                                                                            </ul>
+                                                                        </li>
+                                                                        <li><strong>Representasi Data dengan
+                                                                                TF-IDF:</strong> Diagnosis dalam dataset
+                                                                            diubah menjadi vektor numerik.</li>
+                                                                        <li><strong>Normalisasi Vektor:</strong> Semua
+                                                                            vektor dinormalisasi agar panjangnya 1.</li>
+                                                                        <li><strong>Menghitung Cosine
+                                                                                Similarity:</strong> Hitung tingkat
+                                                                            kemiripan antara diagnosis input dan
+                                                                            dataset.</li>
+                                                                        <li><strong>Seleksi dan Threshold:</strong>
+                                                                            Diagnosis dengan kemiripan di atas ambang
+                                                                            batas (misalnya 0.5) dipilih.</li>
+                                                                        <li><strong>Rekomendasi Obat:</strong> Ambil
+                                                                            resep obat terkait diagnosis yang relevan.
+                                                                        </li>
+                                                                    </ol>
+
+
+                                                                    <h5>Input Diagnosis:</h5>
+                                                                    <p><strong>Demam tinggi disertai sakit
+                                                                            kepala</strong></p>
+
+                                                                    <h5>Langkah-Langkah Perhitungan:</h5>
+                                                                    <table>
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Diagnosis</th>
+                                                                                <th>TF-IDF Representasi</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>Demam tinggi</td>
+                                                                                <td>[0.9, 0.1, 0.0]</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Sakit kepala</td>
+                                                                                <td>[0.2, 0.8, 0.1]</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Demam berdarah</td>
+                                                                                <td>[0.6, 0.0, 0.9]</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+
+                                                                    <h5>Cosine Similarity Calculation:</h5>
+                                                                    <table>
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Diagnosis</th>
+                                                                                <th>Cosine Similarity</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>Demam tinggi</td>
+                                                                                <td>0.85</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Sakit kepala</td>
+                                                                                <td>0.57</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Demam berdarah</td>
+                                                                                <td>0.48</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+
+                                                                    <h5>Hasil Seleksi:</h5>
+                                                                    <p>Diagnosis dengan Cosine Similarity > 0.5:</p>
+                                                                    <ul>
+                                                                        <li>Demam tinggi (0.85)</li>
+                                                                        <li>Sakit kepala (0.57)</li>
+                                                                    </ul>
+
+                                                                    <h5>Rekomendasi Obat:</h5>
+                                                                    <ul>
+                                                                        <li>Demam tinggi: Paracetamol</li>
+                                                                        <li>Sakit kepala: Ibuprofen</li>
+                                                                    </ul>
+
+                                                                    <h5>Hasil Akhir:</h5>
+                                                                    <p><strong>Rekomendasi obat:</strong> Paracetamol,
+                                                                        Ibuprofen</p>
+                                                                </div>
+
 
                                                                 <!-- Tempat untuk menampilkan perhitungan metode content-based filtering -->
                                                                 <div class="form-group content-filtering-result mt-4">
@@ -230,8 +502,6 @@
                                                                         <!-- Detail perhitungan TF-IDF dan Cosine Similarity akan ditampilkan di sini -->
                                                                     </div>
                                                                 </div>
-
-
 
 
                                                                 <!-- Rekomendasi Resep Obat -->
@@ -457,30 +727,25 @@
                                 url: "/api/cbf", // Endpoint untuk perhitungan CBF
                                 method: "POST",
                                 contentType: "application/json",
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                        'content') // Sertakan CSRF token
-                                },
                                 data: JSON.stringify({
                                     diagnosis: diagnosis
-                                }), // Kirim diagnosis sebagai JSON
+                                }),
                                 success: function(response) {
                                     if (response.error) {
                                         $("#content-filtering-" + index).html(
                                             `<p class="text-danger">${response.error}</p>`);
                                     } else {
-                                        // Hasil akhir metode
+                                        // Tampilkan hasil utama
                                         let hasil = `
                     <p><strong>Diagnosis Input:</strong> ${response.diagnosis}</p>
                     <p><strong>Top Matches:</strong> ${response.top_matches.join(', ')}</p>
+                    <p><strong>Cosine Similarity:</strong> ${response.cosine_similarity.toFixed(3)}</p>
                 `;
                                         $("#content-filtering-" + index).html(hasil);
 
-                                        // Detail perhitungan TF-IDF dan Cosine Similarity
+                                        // Tampilkan detail perhitungan
                                         let detailPerhitungan = `
                     <h6><strong>Detail Perhitungan:</strong></h6>
-                    <p><strong>TF-IDF Vector:</strong></p>
-                    <pre>${JSON.stringify(response.tf_idf_vector, null, 2)}</pre>
                     <p><strong>Cosine Similarity Scores:</strong></p>
                     <pre>${JSON.stringify(response.cosine_similarity_scores, null, 2)}</pre>
                 `;
@@ -495,8 +760,6 @@
                                 }
                             });
                         }
-
-
                         // Bind event handler untuk menghapus tombol resep obat jika diklik
                         function bindResepButtonHandler(index) {
                             $("#resep-container-" + index).off("click", ".resep-button").on("click",

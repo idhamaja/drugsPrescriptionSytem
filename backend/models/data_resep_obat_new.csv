@@ -39,11 +39,19 @@ Diare Antibiotik (hanya jika infeksi bakteri terkonfirmasi),Tinidazole
 Diare Antibiotik (hanya jika infeksi bakteri terkonfirmasi),Rifaximin
 Antidiarrea (Opsional & Harus dengan Hati-hati),Loperamide
 Antidiarrea (Opsional & Harus dengan Hati-hati),Bismuth subsalicylate
-Demam Berdarah Dengue (DBD),Istirahat total
-Demam Berdarah Dengue (DBD),Paracetamol
-Demam Berdarah Dengue (DBD),Oralit/cairan elektrolit
-Demam Berdarah Dengue (DBD),infus cairan intravena
-Demam Berdarah Dengue (DBD),cairan infus
+Demam Tinggi,Paracetamol
+Demam Tinggi,Ibuprofen
+Demam Tinggi,Cairan Elektrolit Oral (ORS)
+Demam Tinggi,Kompress dingin
+Sakit Kepala,Paracetamol
+Sakit Kepala,Ibuprofen
+Sakit Kepala,Aspirin
+Sakit Kepala,Sumatriptan
+Demam Berdarah,Paracetamol
+Demam Berdarah,Cairan Infus (Ringer Lactate atau Normal Saline)
+Demam Berdarah,Cairan Elektrolit Oral (ORS)
+Demam Berdarah,Asupan cairan tambahan(Jus jambu merah)
+Demam Berdarah,Hindari NSAID seperti Ibuprofen atau Aspirin
 Tifus,Ciprofloxacin
 Tifus,Azithromycin
 Tifus,Ceftriaxone
